@@ -1,6 +1,8 @@
-#include <stdio.h>
+﻿#include <stdio.h>
 #include <stdlib.h>
 #include "arena.h"
+//teste2
+
 static void Erro(char *msg) {
   fprintf(stderr,"%s\n", msg);
 }
