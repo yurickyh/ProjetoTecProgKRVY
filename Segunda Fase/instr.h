@@ -1,4 +1,6 @@
 /* Códigos das instruções */
+
+//Operando
 typedef enum {
   PUSH,
   POP,
@@ -38,13 +40,23 @@ typedef enum {
 typedef enum {
   NUM,
   ACAO,
-  VAR
+  VAR,
+  CEL,
+  TER
 } Tipo;
 
-//Operando
 typedef struct {
    Tipo t;
    int val;
+   union{
+    struct {
+      int terrain;
+      int cristal;
+      int ocup;
+      int baseColour;
+      //Base base;
+    } CEL;
+   } Controlador;
    /*union {
    int n;
    int ac;

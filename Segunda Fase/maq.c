@@ -3,7 +3,7 @@
 #include "maq.h"
 //#include "arena.h"
 
-/*#define DEBUG*/
+//#define DEBUG
 
 #ifdef DEBUG
 #  define D(X) X
@@ -44,7 +44,8 @@ char *CODES[] = {
 char *TYP[] = {
   "NUM",
   "ACAO",
-  "VAR"
+  "VAR",
+  "CEL"
 };
 
 #else
@@ -83,6 +84,13 @@ void destroi_maquina(/*Maquina *m, */Maquina** maq) {
 #define prg (m->prog)
 
 void exec_maquina(Maquina *m, int n) {
+  char *TYP[] = {
+    "NUM",
+    "ACAO",
+    "VAR",
+    "CEL",
+    "TER"    
+  };
   int i;
   for (i = 0; i < n; i++) {
  OpCode   opc = prg[ip].instr;
@@ -94,6 +102,9 @@ void exec_maquina(Maquina *m, int n) {
    OPERANDO tmp;
    OPERANDO tmp2;
  case PUSH:
+   printf("Tipo: %s  ", TYP[arg.t]);
+   printf("Val: %d  ", arg.val);
+   printf("Ter: %d  ", arg.Controlador.CEL.cristal);
    empilha(pil, arg);
    break;
  case POP:
@@ -249,6 +260,39 @@ void exec_maquina(Maquina *m, int n) {
    break;
  case FRE:
    exec->topo = exec->topo - arg.val;
+   break;
+ case ATR:
+   tmp = desempilha(pil);
+   //verificar se o tipo eh celula
+   if(TYP[tmp.t] == "CEL"){
+    switch(arg.val){    
+    //quando faz tmp.t = 0, eh pra fazer referencia a NUM  
+      case 0:
+        //empilha o numero referido a enum do terreno
+        tmp.t = 4;
+        tmp.val = tmp.Controlador.CEL.terrain;
+        empilha(pil, tmp);
+        break;
+      case 1:
+        tmp.t = 0;
+        tmp.val = tmp.Controlador.CEL.cristal;
+        empilha(pil, tmp);
+        break;
+      case 2:
+        tmp.t = 0;
+        tmp.val = tmp.Controlador.CEL.ocup;
+        empilha(pil, tmp);
+        break;
+      case 3:
+        tmp.t = 0;
+        tmp.val = tmp.Controlador.CEL.baseColour;
+        empilha(pil, tmp);
+        break;
+    }
+   } 
+   else{
+    Erro("Operando nao eh do tipo CEL");
+   }
    break;
  //case ATR:
   // tmp = desempilha(pil);
