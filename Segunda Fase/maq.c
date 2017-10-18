@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "maq.h"
-//#include "arena.h"
 
 //#define DEBUG
 
@@ -34,18 +33,11 @@ char *CODES[] = {
   "RCE",
   "ALC",
   "FRE",
-  "ATR"//,
-  //"MOVE",
-  //"RECO",
-  //"DEPO",
-  //"ATAQ"
-};
-
-char *TYP[] = {
-  "NUM",
-  "ACAO",
-  "VAR",
-  "CEL"
+  "ATR",
+  "MOVE",
+  "RECO",
+  "DEPO",
+  "ATAQ"
 };
 
 #else
@@ -68,10 +60,12 @@ Maquina *cria_maquina(INSTR *p) {
   m->prog = p;
   m->rbp = 0;
   m->cristal = 0;
+  m->vida = 3;
+  m->index = 0;
   return m;
 }
 
-void destroi_maquina(/*Maquina *m, */Maquina** maq) {
+void destroi_maquina(Maquina** maq) {
   free(*maq);
   *maq = NULL;
 }
@@ -91,6 +85,11 @@ void exec_maquina(Maquina *m, int n) {
     "CEL",
     "TER"    
   };
+  char *TERR[] = {
+    "road",
+    "mountain",
+    "river"
+  };
   int i;
   for (i = 0; i < n; i++) {
  OpCode   opc = prg[ip].instr;
@@ -101,10 +100,9 @@ void exec_maquina(Maquina *m, int n) {
  switch (opc) {
    OPERANDO tmp;
    OPERANDO tmp2;
+   OPERANDO op1;
+   OPERANDO op2;
  case PUSH:
-   printf("Tipo: %s  ", TYP[arg.t]);
-   printf("Val: %d  ", arg.val);
-   printf("Ter: %d  ", arg.Controlador.CEL.cristal);
    empilha(pil, arg);
    break;
  case POP:
@@ -116,28 +114,52 @@ void exec_maquina(Maquina *m, int n) {
    empilha(pil, tmp);
    break;
  case ADD:
-   tmp = desempilha(pil);
-   tmp2.t = NUM;
-   tmp2.val = tmp.val + desempilha(pil).val;
-   empilha(pil, tmp2);
+   op1 = desempilha(pil);
+   op2 = desempilha(pil);
+   if(op1.t == NUM && op2.t == NUM){
+    tmp.t = NUM;
+    tmp.val = op1.val + op2.val;
+    empilha(pil, tmp);
+   }
+   else{
+    Erro("Os tipos não são NUM.\n");
+   }   
    break;
  case SUB:
-   tmp = desempilha(pil);
-   tmp2.t = NUM;
-   tmp2.val = desempilha(pil).val-tmp.val;
-   empilha(pil, tmp2);
+   op1 = desempilha(pil);
+   op2 = desempilha(pil);
+   if(op1.t == NUM && op2.t == NUM){
+    tmp.t = NUM;
+    tmp.val = op2.val-op1.val;
+    empilha(pil, tmp);
+   }
+   else{
+    Erro("Os tipos não são NUM.\n");
+   }   
    break;
  case MUL:
-   tmp = desempilha(pil);
-   tmp2.t = NUM;
-   tmp2.val = tmp.val*desempilha(pil).val;
-   empilha(pil, tmp2);
+   op1 = desempilha(pil);
+   op2 = desempilha(pil);
+   if(op1.t == NUM && op2.t == NUM){
+    tmp.t = NUM;
+    tmp.val = op1.val*op2.val;
+    empilha(pil, tmp);
+   }
+   else{
+    Erro("Os tipos não são NUM.\n");
+   }   
    break;
  case DIV:
-   tmp = desempilha(pil);
-   tmp2.t = NUM;
-   tmp2.val = desempilha(pil).val/tmp.val;
-   empilha(pil, tmp2);
+   op1 = desempilha(pil);
+   op2 = desempilha(pil);
+   if(op1.t == NUM && op2.t == NUM){
+    tmp.t = NUM;
+    tmp.val = op2.val/op1.val;
+    empilha(pil, tmp);
+   }
+   else{
+    Erro("Os tipos não são NUM.\n");
+   }   
    break;
  case JMP:
    ip = arg.val;
@@ -245,8 +267,20 @@ void exec_maquina(Maquina *m, int n) {
    break;
  case END:
    return;
- case PRN:   
-   printf("%d\n", desempilha(pil).val);
+ case PRN:  
+   tmp = desempilha(pil);
+   if(tmp.t == CEL){
+    //A ordem da impressao e de acordo com os atributos da CEL:
+    //terrain, cristal, ocup, baseColour
+    printf("%s %s %i %i %i\n", TYP[tmp.t],TERR[tmp.Controlador.CEL.terrain], tmp.Controlador.CEL.cristal, 
+      tmp.Controlador.CEL.ocup, tmp.Controlador.CEL.baseColour);
+   }
+   else if(tmp.t == TER){
+    printf("%s %s\n", TYP[tmp.t], TERR[tmp.val]);
+   }
+   else{
+    printf("%s %i\n", TYP[tmp.t], tmp.val);
+   }
    break;
  case STL:   
    exec->val[arg.val+rbp] = desempilha(pil);
@@ -263,14 +297,14 @@ void exec_maquina(Maquina *m, int n) {
    break;
  case ATR:
    tmp = desempilha(pil);
-   //verificar se o tipo eh celula
-   if(TYP[tmp.t] == "CEL"){
-    switch(arg.val){    
-    //quando faz tmp.t = 0, eh pra fazer referencia a NUM  
+   //Verificar se o tipo  celula
+   if(tmp.t == CEL){
+    switch(arg.val){   
+    //Quando tmp.t = 0, e pra fazer referencia a um NUM  
       case 0:
-        //empilha o numero referido a enum do terreno
-        tmp.t = 4;
-        tmp.val = tmp.Controlador.CEL.terrain;
+        //Empilha o numero referido a enum do terreno
+        tmp.t = TER;
+        tmp.val = tmp.Controlador.CEL.terrain;      
         empilha(pil, tmp);
         break;
       case 1:
@@ -294,36 +328,18 @@ void exec_maquina(Maquina *m, int n) {
     Erro("Operando nao eh do tipo CEL");
    }
    break;
- //case ATR:
-  // tmp = desempilha(pil);
-   /*Celula é um operando??? Como??
-   switch(arg.val){
-   case 0:
-     empilha(pil, tmp.terrain);
-     break;
-   case 1:
-     empilha(pil, tmp.cristais);
-     break;
-   case 2:
-     empilha(pil, tmp.ocup);
-     break;
-   case 3:
-     empilha(pil, tmp.base);
-     break;
-   }*/
- //  break;
- //case MOVE:
-   //Sistema(arg.val);
-   //break;
- //case RECO:
-   //Sistema(arg.val);
-   //break;
- //case DEPO:
-   //Sistema(arg.val);
-   //break;
- //case ATAQ:
-   //Sistema(arg.val);
-   //break;
+ case MOVE:
+   Sistema(m, 'M', arg.val);
+   break;
+ case RECO:
+   Sistema(m, 'R', arg.val);
+   break;
+ case DEPO:
+   Sistema(m, 'D', arg.val);
+   break;
+ case ATAQ:
+   Sistema(m, 'A', arg.val);
+   break;
  }
  D(imprime(pil,5));
  D(puts("\n"));

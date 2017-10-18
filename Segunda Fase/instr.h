@@ -1,6 +1,4 @@
 /* Códigos das instruções */
-
-//Operando
 typedef enum {
   PUSH,
   POP,
@@ -28,27 +26,25 @@ typedef enum {
   RCE,
   ALC,
   FRE,
-  ATR//,
-  //MOVE,
-  //RECO,
-  //DEPO,
-  //ATAQ
+  ATR,
+  MOVE,
+  RECO,
+  DEPO,
+  ATAQ
 } OpCode;
 
-/* Tipos dos operandos */
-/* no momento, são todos inteiros */
-typedef enum {
+typedef enum{
   NUM,
   ACAO,
   VAR,
   CEL,
   TER
-} Tipo;
+}Tipo;
 
-typedef struct {
-   Tipo t;
-   int val;
-   union{
+typedef struct {  
+  Tipo t;
+  int val;  
+  union{
     struct {
       int terrain;
       int cristal;
@@ -56,7 +52,7 @@ typedef struct {
       int baseColour;
       //Base base;
     } CEL;
-   } Controlador;
+  } Controlador;
    /*union {
    int n;
    int ac;
