@@ -6,27 +6,27 @@
 #define MAXMATRIZL 4
 #define MAXMATRIZC 8
 #define BASELIFE 20
+//Ao mudar o valor de MAXMAQ ou MAXEXERC ou ROBOSONEXERC, e preciso acertar os valores dos outros de modo que MAXMAQ=MAXEXERC*ROBOSONEXERC
 
 typedef enum{
 	road,
 	mountain,
 	river
-	//adicionar mais depois
+	//Adicionar mais depois
 } Terreno;
 
 //Colour = 0 -> não é base
 //Colour = outro numero -> é base
 typedef struct{
 	int vida;
-	int colour; //identificação da base	
+	int colour; //Identificação da base	
 } Base;
 
 typedef struct{
 	Terreno terrain;
 	int cristal;
-	int ocup;
+	int ocup;//0 = desocupada; 1 ate MAXMAQ = indice do robo no vetor de endereços de maquina da arena; MAXMAQ+1 = base;
 	int baseColour;
-	//Base base;
 } Celula;
 
 typedef struct{
@@ -41,14 +41,21 @@ typedef struct{
 	Exercito* exerc[MAXEXERC];
 	int exercTopo;	
 	int baseCount[MAXEXERC+1];
-	//int roboCount[MAXMAQ];
 } Arena;
 
-Arena *CriaArena();
+extern Arena *a;
+
+typedef struct{
+	int x;
+	int y;
+} Coord;
+
+void CriaArena();
 void Atualiza();
-Exercito *InsereExercito(Arena *a, int x, int y);
-Base *createBase(Arena *a);
+Exercito *InsereExercito(int x, int y, INSTR *p);
+Base *createBase();
 void destroiBase(Base** b);
-void RemoveExercito(Arena *a, Exercito *e, Exercito** ex);
-void acertaMatriz(Arena *a);
-void Sistema(char code, int op);
+void RemoveExercito(Exercito *e, Exercito** ex);
+void acertaMatriz();
+void Sistema(Maquina *m, char code, int op);
+Coord getNeighbour(int l, int c, int angle);
