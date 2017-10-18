@@ -45,7 +45,7 @@ void Atualiza(int rodadas){
 				destroi_maquina(&a->robos[j]);
 			}
 			if(a->robos[j]!=NULL){
-				exec_maquina(a->robos[j], 50);
+				exec_maquina(a->robos[j], INSTRNUMBER);
 			}	
 			int y;
 			for(y=0;y<MAXEXERC;y++){
@@ -132,6 +132,7 @@ void Sistema(Maquina *m, char code, int op){
 	//op = angulo da direcao
 	switch (code) {
 	Coord tmp;
+	Coord tmp2;
 	case 'M':
 	 tmp = getNeighbour(m->position[0], m->position[1], op);
 	 if(tmp.x == MAXMATRIZL || tmp.y == MAXMATRIZC){
@@ -142,10 +143,15 @@ void Sistema(Maquina *m, char code, int op){
 	 	printf("Tentativa de movimento para célula ocupada.\n");
 	 	return;
 	 }
+	 tmp2.x = m->position[0];
+	 tmp2.y = m->position[1];
 	 m->position[0] = tmp.x;
 	 m->position[1] = tmp.y;
+	 if(a->matriz[tmp2.x][tmp2.y].ocup != MAXMAQ+1){
+	 	a->matriz[tmp2.x][tmp2.y].ocup = 0;
+	 }
 	 a->matriz[tmp.x][tmp.y].ocup = m->index+1;
-	 printf("Andou.\n");
+	 printf("Andou para [%1d][%1d].\n", tmp.x, tmp.y);
 	 break;
 	case 'D':
      tmp = getNeighbour(m->position[0], m->position[1], op);
@@ -160,13 +166,13 @@ void Sistema(Maquina *m, char code, int op){
      if(a->matriz[tmp.x][tmp.y].ocup == MAXMAQ+1){
      	a->exerc[a->baseCount[a->matriz[tmp.x][tmp.y].baseColour]-1]->base->vida -= m->cristal;
      	m->cristal = 0;  
-     	printf("Depositou na base.\n");
+     	printf("Depositou na base %2d.\n", a->matriz[tmp.x][tmp.y].baseColour);
      	return;   	
      }
      if(a->matriz[tmp.x][tmp.y].ocup == 0){
      	a->matriz[tmp.x][tmp.y].cristal += m->cristal;
      	m->cristal = 0;
-     	printf("Depositou na célula.\n");
+     	printf("Depositou na célula [%1d][%1d].\n", tmp.x, tmp.y);
      	return;
      }
  	 break;
@@ -186,7 +192,7 @@ void Sistema(Maquina *m, char code, int op){
 	 }
 	 m->cristal = m->cristal + a->matriz[tmp.x][tmp.y].cristal;
 	 a->matriz[tmp.x][tmp.y].cristal = 0;
-	 printf("Recolheu.\n");
+	 printf("Recolheu da célula [%1d][%1d].\n", tmp.x, tmp.y);
      break;
 	case 'A':	
 	 tmp = getNeighbour(m->position[0], m->position[1], op);
@@ -199,7 +205,7 @@ void Sistema(Maquina *m, char code, int op){
 	 	return;
 	 }
 	 a->robos[a->matriz[tmp.x][tmp.y].ocup-1]->vida = a->robos[a->matriz[tmp.x][tmp.y].ocup-1]->vida - 1;
-	 printf("Efetuou o ataque.\n");
+	 printf("Efetuou o ataque na célula [%1d][%1d] atingindo o robô %3d.\n", tmp.x, tmp.y, a->matriz[tmp.x][tmp.y].ocup-1);
 	 break;
 	}
 }
@@ -294,9 +300,3 @@ Coord getNeighbour(int l, int c, int angle){
 	}
 	return cord;
 }
-
-char *TERR[]={
-	"road",
-	"mountain",
-	"river"
-};
