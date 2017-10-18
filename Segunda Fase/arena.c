@@ -1,6 +1,8 @@
-﻿#include <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include "arena.h"
+
+Arena *a;
 
 static void Erro(char *msg) {
   fprintf(stderr,"%s\n", msg);
@@ -11,21 +13,20 @@ static void Fatal(char *msg, int cod) {
   exit(cod);
 }
 
-Arena *CriaArena(){
-	Arena *a = (Arena*)malloc(sizeof(Arena));
-	if (!a) Fatal("Memória insuficiente",4);
+void CriaArena(){
+	a = malloc(sizeof(Arena));
+	if(!a) Fatal("Memória insuficiente", 4);
 	a->robosTopo = 0;
-	a->exercTopo = 0;	
-	return a;
+	a->exercTopo = 0;
 }
 
-void Atualiza(int rodadas, Arena *a){
+void Atualiza(int rodadas){
 	int i;
 	for(i=0;i<rodadas;i++){
 		int u;
 		int count = 0;
 		int aux;
-		for(u=1;u<MAXEXERC+1;u++){//checar se há apenas uma base ativa, isto é, checar se alguem ganhou
+		for(u=1;u<MAXEXERC+1;u++){//Checar se há apenas uma base ativa, isto é, checar se alguem ganhou
 			if(a->baseCount[u] != 0){				
 				count++;
 				if(count>1){
@@ -40,48 +41,45 @@ void Atualiza(int rodadas, Arena *a){
 		}
 		int j;
 		for(j=0;j<MAXMAQ;j++){
-						
-			if(!a->robos[j]){
-				//printf("IGUAL NULL %2d \n", j);						
-			}	
-			else{
-				//printf("NAO NULL %2d  %1d  %1d\n", j, a->robos[j]->position[0], a->robos[j]->position[1]);
-				exec_maquina(a->robos[j], 50);
+			if(a->robos[j]!=NULL && a->robos[j]->vida <= 0){//Checar se o robo ficou sem vida
+				destroi_maquina(&a->robos[j]);
 			}
+			if(a->robos[j]!=NULL){
+				exec_maquina(a->robos[j], 50);
+			}	
 			int y;
 			for(y=0;y<MAXEXERC;y++){
 				if(a->exerc[y]!=NULL){
-					if(a->exerc[y]->base->vida <= 0){
-						RemoveExercito(a, a->exerc[y], &a->exerc[y]);						
+					if(a->exerc[y]->base->vida <= 0){//Checar se alguma base ficou sem vida
+						RemoveExercito(a->exerc[y], &a->exerc[y]);						
 					}
 				}
-			}//checar se alguma base foi destruida. Antes ou depois da rodada?			
+			}		
 		}
 	}
 }
 
-INSTR p[] = {{PUSH, {NUM,  5}},	{PRN,  {NUM,  0}}, {END,  {NUM,  0}}};
-
-Exercito *InsereExercito(Arena *a, int x, int y){//x e y = coordenadas da base desse novo exercito
+Exercito *InsereExercito(int x, int y, INSTR *p){//x e y = coordenadas da base desse novo exercito
 	Exercito *e = (Exercito*)malloc(sizeof(Exercito));
 	if(!e) Fatal("Memória insuficiente",4);
 	int i;
 	for(i=0;i<ROBOSONEXERC;i++){				
 		Maquina *maq = cria_maquina(p);
-		//Robos spawnam em cima da própria base
+		//Robos spawnam em cima da propria base
 		maq->position[0] = x;
 		maq->position[1] = y;
+		maq->index = a->robosTopo;
 		a->robos[a->robosTopo++] = maq;
 		e->robots[i] = maq;
 	}	
-	e->base = createBase(a);
+	e->base = createBase();
 	a->matriz[x][y].baseColour = e->base->colour;
 	a->matriz[x][y].cristal = 0;
-	a->matriz[x][y].ocup = 1;
+	a->matriz[x][y].ocup = MAXMAQ+1;
 	return e;
 }
 
-Base *createBase(Arena *a){//escolher e criar uma base que ainda não esta sendo usado
+Base *createBase(){//Escolher e criar uma base que ainda nao esta sendo usada
 	int i;
 	for(i=1;i<MAXEXERC+1; i++){
 		if(a->baseCount[i]==0){
@@ -101,23 +99,20 @@ void destroiBase(Base** b){
 	*b = NULL;
 }
 
-void RemoveExercito(Arena *a, Exercito *e, Exercito** ex){
+void RemoveExercito(Exercito *e, Exercito** ex){
 	int i = e->base->colour;
 	int j;
-	//for(i=0;i<ROBOSONEXERC;i++){
-	//	destroi_maquina(&e->robots[i]);
-	//}
 	for(j=(5*(i-1));j<(i*5);j++){
 		destroi_maquina(&a->robos[j]);
 	}
 	a->baseCount[i] = 0;
-	acertaMatriz(a);
+	acertaMatriz();
 	destroiBase(&e->base);
 	free(*ex);
 	*ex = NULL;
 }
 
-void acertaMatriz(Arena *a){
+void acertaMatriz(){
 	int i;
 	for(i=0;i<MAXMATRIZL;i++){
 		int j;
@@ -126,7 +121,6 @@ void acertaMatriz(Arena *a){
 				if(a->baseCount[a->matriz[i][j].baseColour] == 0){
 					a->matriz[i][j].baseColour = 0;
 					a->matriz[i][j].ocup = 0;
-					//Acertar a ocupação da célula. Desocupar a célula ao destruir a base e mudar as caracteristicas da celula ou apenas desocupar a celula?
 					return;
 				}
 			}
@@ -134,10 +128,175 @@ void acertaMatriz(Arena *a){
 	}
 }
 
-//As chamadas do sistema mexem com a pilha de dados que são utilizadas apenas pelas maquinas. "eventuais operandos estão colocados na pilha de dados", a arena teria que acessar 
-//esses operandos??? #N faz sentido
-void Sistema(char code, int op){
-	//op = direção -> angulo
-
-
+void Sistema(Maquina *m, char code, int op){
+	//op = angulo da direcao
+	switch (code) {
+	Coord tmp;
+	case 'M':
+	 tmp = getNeighbour(m->position[0], m->position[1], op);
+	 if(tmp.x == MAXMATRIZL || tmp.y == MAXMATRIZC){
+	 	printf("Tentativa de movimento para célula inválida.\n");
+	 	return;
+	 }
+	 if(a->matriz[tmp.x][tmp.y].ocup != 0){
+	 	printf("Tentativa de movimento para célula ocupada.\n");
+	 	return;
+	 }
+	 m->position[0] = tmp.x;
+	 m->position[1] = tmp.y;
+	 a->matriz[tmp.x][tmp.y].ocup = m->index+1;
+	 printf("Andou.\n");
+	 break;
+	case 'D':
+     tmp = getNeighbour(m->position[0], m->position[1], op);
+     if(tmp.x == MAXMATRIZL || tmp.y == MAXMATRIZC){
+     	printf("Tentativa de depósito em célula inválida.\n");
+     	return;
+     }
+     if(a->matriz[tmp.x][tmp.y].ocup != MAXMAQ+1 && a->matriz[tmp.x][tmp.y].ocup != 0){
+     	printf("Tentativa de depósito em célula ocupada por outro robô.\n");
+     	return;
+     }
+     if(a->matriz[tmp.x][tmp.y].ocup == MAXMAQ+1){
+     	a->exerc[a->baseCount[a->matriz[tmp.x][tmp.y].baseColour]-1]->base->vida -= m->cristal;
+     	m->cristal = 0;  
+     	printf("Depositou na base.\n");
+     	return;   	
+     }
+     if(a->matriz[tmp.x][tmp.y].ocup == 0){
+     	a->matriz[tmp.x][tmp.y].cristal += m->cristal;
+     	m->cristal = 0;
+     	printf("Depositou na célula.\n");
+     	return;
+     }
+ 	 break;
+	case 'R':
+     tmp = getNeighbour(m->position[0], m->position[1], op);
+     if(tmp.x == MAXMATRIZL || tmp.y == MAXMATRIZC){
+     	printf("Tentativa de recolher cristal em célula inválida.\n");
+     	return;
+     }
+     if(a->matriz[tmp.x][tmp.y].ocup != 0){
+	 	printf("Tentativa de recolher cristal em célula ocupada.\n");
+	 	return;
+	 }
+	 if(a->matriz[tmp.x][tmp.y].cristal == 0){
+	 	printf("Não há cristais para recolher nesta célula.\n");
+	 	return;
+	 }
+	 m->cristal = m->cristal + a->matriz[tmp.x][tmp.y].cristal;
+	 a->matriz[tmp.x][tmp.y].cristal = 0;
+	 printf("Recolheu.\n");
+     break;
+	case 'A':	
+	 tmp = getNeighbour(m->position[0], m->position[1], op);
+	 if(a->matriz[tmp.x][tmp.y].ocup == 0){
+	 	printf("Tentativa de ataque em célula desocupada.\n");
+	 	return;
+	 }
+	 if(a->matriz[tmp.x][tmp.y].ocup == MAXMAQ+1){
+	 	printf("Tentativade ataque em uma base. Não é possível atacar uma base diretamente.\n");
+	 	return;
+	 }
+	 a->robos[a->matriz[tmp.x][tmp.y].ocup-1]->vida = a->robos[a->matriz[tmp.x][tmp.y].ocup-1]->vida - 1;
+	 printf("Efetuou o ataque.\n");
+	 break;
+	}
 }
+
+Coord getNeighbour(int l, int c, int angle){
+	Coord cord;
+	switch (angle){
+	case 45:
+	 if(c+1 == MAXMATRIZC || (l==0 && c%2!=0)){
+	 	cord.x = MAXMATRIZL;
+	 	cord.y = MAXMATRIZC;
+	 }
+	 else{
+	 	if(c%2==0){
+	 		cord.x = l;
+	 		cord.y = c+1;
+	 	}
+	 	else{
+	 		cord.x = l-1;
+	 		cord.y = c+1;
+	 	}
+	 }
+	 break;
+	case 90:
+	 if(l==0){
+	 	cord.x = MAXMATRIZL;
+	 	cord.y = MAXMATRIZC;
+	 }
+	 else{
+	 	cord.x = l-1;
+	 	cord.y = c;
+	 }
+	 break;
+	case 135:
+	if(c == 0 || (l==0 && c%2!=0)){
+	 	cord.x = MAXMATRIZL;
+	 	cord.y = MAXMATRIZC;
+	 }
+	 else{
+	 	if(c%2==0){
+	 		cord.x = l;
+	 		cord.y = c-1;
+	 	}
+	 	else{
+	 		cord.x = l-1;
+	 		cord.y = c-1;
+	 	}
+	 }
+ 	 break;
+ 	case 225:
+ 	if(c == 0 || (l==MAXMATRIZL-1 && c%2==0)){
+	 	cord.x = MAXMATRIZL;
+	 	cord.y = MAXMATRIZC;
+	 }
+	 else{
+	 	if(c%2!=0){
+	 		cord.x = l;
+	 		cord.y = c-1;
+	 	}
+	 	else{
+	 		cord.x = l+1;
+	 		cord.y = c-1;
+	 	}
+	 }
+ 	 break;
+ 	case 270:
+ 	if(l==MAXMATRIZL-1){
+	 	cord.x = MAXMATRIZL;
+	 	cord.y = MAXMATRIZC;
+	 }
+	 else{
+	 	cord.x = l+1;
+	 	cord.y = c;
+	 }
+ 	 break;
+ 	case 315:
+ 	if(c == MAXMATRIZC-1 || (l==MAXMATRIZL-1 && c%2==0)){
+	 	cord.x = MAXMATRIZL;
+	 	cord.y = MAXMATRIZC;
+	 }
+	 else{
+	 	if(c%2==0){
+	 		cord.x = l+1;
+	 		cord.y = c+1;
+	 	}
+	 	else{
+	 		cord.x = l;
+	 		cord.y = c+1;
+	 	}
+	 }
+ 	 break;
+	}
+	return cord;
+}
+
+char *TERR[]={
+	"road",
+	"mountain",
+	"river"
+};
