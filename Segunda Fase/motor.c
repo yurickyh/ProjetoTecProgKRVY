@@ -48,6 +48,13 @@ INSTR programa[] = {
     {MOVE, {ACAO, 270}},
     {ATAQ, {ACAO, 270}}*/
 
+    //Descomentar para o teste 11
+    /*{PUSH, {CEL, 1,{river, 2, 10, 6}}},
+    {ATR, {NUM, 0}},
+    {PRN, {NUM, 0}},
+    {END,  {NUM,  0}}*/
+    
+
 };
 
 int main(int ac, char **av) {
@@ -227,5 +234,9 @@ int main(int ac, char **av) {
   a->exerc[a->exercTopo++] = InsereExercito(1, 4, programa);
   Atualiza(1);*/  
 
+  //Teste 11: chamada pra instrução ATR. Descomentar no vetor de instruções a parte referente ao teste 11 e comentar as outras instruções.
+  Maquina *maq = cria_maquina(programa);
+  exec_maquina(maq, 1000);
+  destroi_maquina(&maq);
   return 0;
 }
