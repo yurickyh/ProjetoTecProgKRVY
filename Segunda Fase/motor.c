@@ -5,7 +5,6 @@
 INSTR programa[] = {
     //FATORIAL. Para numeros muito grandes é preciso aumentar o valor da variavel INSTRNUMBER ou aumentar o numero do argumento passado na funcao Atualiza():
     //Descomentar para o teste 6.
-
     /*{PUSH, {NUM,  6}}, //0
     {CALL, {NUM,  4}}, //1
     {PRN,  {NUM,  0}}, //2
@@ -84,6 +83,7 @@ int main(int ac, char **av) {
     }
     */
 
+
     //Teste 2: insercao e remocao de exercitos. São inseridos 3 exércitos, mudar o valor de i para escolher qual dos 3 exércitos remover:
     /*CriaArena();
     Celula c[4][8] = {
@@ -110,8 +110,8 @@ int main(int ac, char **av) {
     printf("Cor da base na coordenada[0][0]: %2d\n", a->matriz[0][0].baseColour);
     printf("Cor da base na coordenada[2][0]: %2d\n", a->matriz[2][0].baseColour);
     printf("Cor da base na coordenada[1][5]: %2d\n", a->matriz[1][5].baseColour);
-    //Se a cor da base for 0, quer dizer que não há uma base ali.
-    */
+    //Se a cor da base for 0, quer dizer que não há uma base ali.*/
+    
 
     //Teste 3: teste da declaracao do vencedor pelo escalonador se houver apenas um exercito restante na arena. São inseridos 2 exercitos, mudar o valor de i para escolher qual exercito remover:
     /*
@@ -130,6 +130,7 @@ int main(int ac, char **av) {
     Atualiza(1);
     */
 
+
     //Teste 4: teste de remocao do exercito pelo escalonador quando a sua base fica sem vida. São inseridos 2 exercitos, mudar o valor de i para escolher qual exercito remover:
     /*
     CriaArena();
@@ -146,6 +147,7 @@ int main(int ac, char **av) {
     a->exerc[i-1]->base->vida = 0;
     Atualiza(2);
     */
+
 
     //Teste 5: teste de remocao do robo pelo escalonador quando este fica sem vida. MUdar o valor de i para escolher qual robo sera removido, lembrando
     /*
@@ -167,6 +169,7 @@ int main(int ac, char **av) {
     }
     */
 
+
     //Teste 6: criacao de 2 exercitos e cada robo executa um fatorial. Descomentar o fatorial no vetor de instruções em cima e comentar as outras instruções:
     /*
     CriaArena();
@@ -181,6 +184,7 @@ int main(int ac, char **av) {
     a->exerc[a->exercTopo++] = InsereExercito(2, 0, programa); 
     Atualiza(4);
     */
+
 
     //Teste 7: chamadas do sistema = MOVE. Como todos os robos comecam no mesmo lugar e irao tentar se mover para os mesmos lugares, haverá conflitos:
     //Descomentar no vetor de instruções a parte referente ao teste 7 e comentar as outras instruções.
@@ -198,6 +202,7 @@ int main(int ac, char **av) {
     Atualiza(1);
     */
 
+
     //Teste 8: chamadas do sistema = RECOLHER. Descomentar no vetor de instruções a parte referente ao teste 8 e comentar as outras instruções.
     /*
     CriaArena();  
@@ -212,6 +217,7 @@ int main(int ac, char **av) {
     a->exerc[a->exercTopo++] = InsereExercito(1, 4, programa);
     Atualiza(1);
     */
+
 
     //Teste 9: chamadas do sistema = DEPOSITAR. Descomentar no vetor de instruções a parte referente ao teste 9 e comentar as outras instruções.
     /*
@@ -228,6 +234,7 @@ int main(int ac, char **av) {
     Atualiza(1);
     */
 
+
     //Teste 10: chamadas do sistema = ATACAR. Descomentar no vetor de instruções a parte referente ao teste 10 e comentar as outras instruções.
     /*
     CriaArena();  
@@ -243,9 +250,12 @@ int main(int ac, char **av) {
     Atualiza(1);
     */
 
+
     //Teste 11: chamada pra instrução ATR. Descomentar no vetor de instruções a parte referente ao teste 11 e comentar as outras instruções.
-    Maquina *maq = cria_maquina(programa);
+    /*Maquina *maq = cria_maquina(programa);
     exec_maquina(maq, 1000);
-    destroi_maquina(&maq);
+    destroi_maquina(&maq);*/
+
+
     return 0;
 }

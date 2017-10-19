@@ -228,7 +228,7 @@ void exec_maquina(Maquina *m, int n) {
                 }
                 break;
             case LE:
-                if (desempilha(pil).val >= desempilha(pil).val {
+                if (desempilha(pil).val >= desempilha(pil).val) {
                     tmp.t = NUM;
                     tmp.val = 1;
                     empilha(pil, tmp);
