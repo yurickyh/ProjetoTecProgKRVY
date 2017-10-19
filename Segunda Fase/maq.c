@@ -259,7 +259,7 @@ void exec_maquina(Maquina *m, int n) {
                 return;
             case PRN:
                 tmp = desempilha(pil);
-                if(tmp.t == CEL){
+                if(tmp.t == CEL) {
                 //A ordem da impressao e de acordo com os atributos da CEL:
                 //terrain, cristal, ocup, baseColour
                     printf("%s %s %i %i %i\n", TYP[tmp.t],TERR[tmp.Controlador.CEL.terrain], tmp.Controlador.CEL.cristal, 

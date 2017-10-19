@@ -81,4 +81,16 @@ TODOS OS CÓDIGOS FORAM TESTADOS EM LINUX UBUNTU 16.04 LTS
 *** TESTES
 
     Os testes aplicados estão no arquivo "motor.c".
-    #TODO
+    São 11 testes no total:
+        - Teste da criação da arena;
+        - Inserção e remoção de exércitos;
+        - Declaração de exército vencedor;
+        - Remoção de exército que teve vida da base zerada;
+        - Remoção de robô que teve vida zerada;
+        - Criação de dois exército, com cada robô executando uma lista de instruções (Fibonacci no teste);
+        - Ação MOVE de robôs na arena;
+        - Ação RECOLHER;
+        - Ação DEPOSITAR;
+        - Ação ATACAR;
+        - Teste da instrução ATR.
+    Todos os códigos estão comentados na função Main de "motor.c". Basta "descomentar" o teste a ser executado e, se necessário, o trecho correspondente ao teste no vetor INSTR programa[].
