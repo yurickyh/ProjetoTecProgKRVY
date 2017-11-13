@@ -43,22 +43,22 @@ int main(int ac, char **av) {
     {
         if(count==0)
         {
-            a->matriz[i][j].terrain = pch;]
+            a->matriz[i][j].terrain = pch;
             count++;
         }
         else if(count==1)
         {
-            a->matriz[i][j].cristal = (int)pch;
+            a->matriz[i][j].cristal = pch-'0';
             count++;        
         }
         else if(count==2)
         {
-            a->matriz[i][j].ocup = (int)pch;
+            a->matriz[i][j].ocup = pch-'0';
             count++;        
         }
         else if(count==3)
         {
-            a->matriz[i][j].baseCoulour = (int)pch;
+            a->matriz[i][j].baseCoulour = pch-'0';
             count = 0;
             if(j+1==MAXMATRIZC)
             {
