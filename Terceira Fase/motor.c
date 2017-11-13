@@ -37,7 +37,7 @@ int main(int ac, char **av) {
     char * pch;
     int i=0, j=0, count=0;
     display = fopen("map.txt", "r");
-    fgets(s, 1024, file);
+    fgets(s, 1024, display);
     pch = strtok(s, " ");
     while(pch!=NULL)
     {
@@ -76,7 +76,7 @@ int main(int ac, char **av) {
         }
         pch = strtok(NULL, " ");
     }
-    fclose(file);
+    fclose(display);
     printf("Teste %2d\n", a->matriz[2][2].cristal);
     
     /*int lin = 0, col = 0, color = 0;
