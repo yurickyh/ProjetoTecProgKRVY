@@ -59,10 +59,14 @@ void Atualiza(int rodadas){
     }
 }
 
-Exercito *InsereExercito(int x, int y, INSTR *p){ //x e y = coordenadas da base desse novo exercito
+Exercito *InsereExercito(int x, int y, INSTR *p, FILE *display){ //x e y = coordenadas da base desse novo exercito
     Exercito *e = (Exercito*)malloc(sizeof(Exercito));
     if(!e) Fatal("Memória insuficiente",4);
     int i;
+    e->base = createBase();
+    a->matriz[x][y].baseColour = e->base->colour;
+    a->matriz[x][y].cristal = 0;
+    a->matriz[x][y].ocup = MAXMAQ+1;
     for(i=0;i<ROBOSONEXERC;i++){
         Maquina *maq = cria_maquina(p);
         //Robos spawnam em cima da propria base
@@ -70,12 +74,22 @@ Exercito *InsereExercito(int x, int y, INSTR *p){ //x e y = coordenadas da base 
         maq->position[1] = y;
         maq->index = a->robosTopo;
         a->robos[a->robosTopo++] = maq;
+        if(a->matriz[x][y].baseColour == 1){
+            /*
+                CRIAR AS POSIÇÕES AQUI E COLOCAR COMO ARGUMENTO NO FPRINTF
+
+
+            */
+            fprintf(display, "rob GILEAD_A.png"); 
+            fprintf(display, "%d %d %d %d %d", a->robosTopo, , , , ); 
+
+        }
+        if(a->matriz[x][y].baseColour == 2){
+            fprintf(display, "rob GILEAD_A.png"); 
+            fprintf(display, "%d %d %d %d %d", a->robosTopo, , , , ); 
+        }
         e->robots[i] = maq;
-    }
-    e->base = createBase();
-    a->matriz[x][y].baseColour = e->base->colour;
-    a->matriz[x][y].cristal = 0;
-    a->matriz[x][y].ocup = MAXMAQ+1;
+    }    
     return e;
 }
 
@@ -167,7 +181,7 @@ void Sistema(Maquina *m, char code, int op){
                 a->exerc[a->baseCount[a->matriz[tmp.x][tmp.y].baseColour]-1]->base->vida -= m->cristal;
                 m->cristal = 0;  
                 printf("Depositou na base %2d.\n", a->matriz[tmp.x][tmp.y].baseColour);
-                return;   	
+                return;     
             }
             if(a->matriz[tmp.x][tmp.y].ocup == 0){
                 a->matriz[tmp.x][tmp.y].cristal += m->cristal;
