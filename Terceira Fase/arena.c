@@ -315,7 +315,7 @@ Coord avaliableNeighbour(int l, int c)
     int i;
     for(i=0; i<6; i++)
     {
-        if(co[i].x!=MAXMATRIZL && co[i].y!=MASMATRIZC)
+        if(co[i].x!=MAXMATRIZL && co[i].y!=MAXMATRIZC)
         {
             if(a->matriz[co[i].x][co[i].y].ocup==0)
             {
