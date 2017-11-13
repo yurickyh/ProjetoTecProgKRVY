@@ -79,7 +79,7 @@ int main(int ac, char **av) {
     };
     memcpy(a->matriz, c, sizeof(a->matriz));
     display = popen("./apres", "w"); //criacao do pipe para apres
-    if (display == NULL) {//verificar se o display eh nulo
+    if (display == NULL) { //verificar se o display eh nulo
         fprintf(stderr,"Não encontrei o programa de exibição\n");
         return 1;
     }  
@@ -87,13 +87,14 @@ int main(int ac, char **av) {
         for (col = 0; col < colunas; col++){
             if(a->matriz[lin][col].baseColour == 1){
                 printf("\nEntrou aqui");
-                fprintf(display, "base base1.png %d %d %d\n", a->matriz[lin][col].baseColour, lin, col);//criar a base vermelha            
+                fprintf(display, "base base1r.png %d %d %d\n", a->matriz[lin][col].baseColour, lin, col); //criar a base vermelha            
             }
             else if(a->matriz[lin][col].baseColour == 2){
-                fprintf(display, "base base2.png %d %d %d\n", a->matriz[lin][col].baseColour, lin, col);//criar a base azul
+                fprintf(display, "base base2r.png %d %d %d\n", a->matriz[lin][col].baseColour, lin, col); //criar a base azul
             }
             else {
-                fprintf(display, "cel %d %d %s\n", lin, col, Color[a->matriz[lin][col].terrain]);    
+                fprintf(display, "cel %d %d %s %s\n", lin, col, Color[a->matriz[lin][col].terrain]);
+                fprintf(display, "cristal %d %d %d\n", lin, col, a->matriz[lin][col].cristal);
             }     
             fflush(display);   
         }

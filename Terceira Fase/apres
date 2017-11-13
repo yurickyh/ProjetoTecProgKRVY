@@ -5,6 +5,8 @@ import fileinput
 from math import *
 
 pg.init()                                 # inicialização do sistema
+pg.font.init() # inicia fontes
+myfont = pg.font.SysFont('Comic Sans MS', 30)
 
 # altura e largura da arena, em células
 H, W = 4,8
@@ -83,7 +85,37 @@ class Base(pg.sprite.Sprite):
         s.rect.topleft = [x-l1/2,y-h1/2]
         # desenha
         scr.blit(s.image, s.rect)
-    
+
+class Cristal(pg.sprite.Sprite):
+    """
+    Representa um base, possui uma imagem
+    """
+    def __init__(s, num):
+        """
+        Construtor, img é o nome do arquivo com a imagem
+        """
+        pg.sprite.Sprite.__init__(s)
+        s.image = pg.image.load("cristal.png")
+        s.rect = s.image.get_rect()
+        s.num = num
+
+    def draw(s,i,j):
+        """
+        Desenha o robô na célula (i,j)
+        """
+        x, y = convert(i,j)
+
+        # fronteiras do sprite
+        l0,h0,l1,h1 = s.rect
+
+        # corrije a posição de acordo com o tamanho do sprite
+        s.rect.topleft = [x-l1/2,y-h1/2]
+        # desenha
+        scr.blit(s.image, s.rect)
+
+        textsurface = myfont.render(str(s.num), False, (0, 0, 0))
+        scr.blit(textsurface, s.rect)
+
 class cell:
     """
     Representa uma das células da arena
@@ -154,12 +186,18 @@ for line in fileinput.input():
         pg.time.wait(100)
         continue
 
-    if r[0] == 'base':        
+    if r[0] == 'base':
         bass.append(Base(r[1]))
         idBase, i, j = list(map(int, r[2:]))
         bass[idBase - 1].draw(i,j)
         atu();
-        continue        
+        continue
+
+    if r[0] == 'cristal':
+        i, j, qtd_cristal = list(map(int, r[2:]))
+        Cristal(qtd_cristal).draw(i,j);
+        atu();
+        continue
 
     # linha de movimentação:
     # robô, corrdenadas originais, coordenadas finais
