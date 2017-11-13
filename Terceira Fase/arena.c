@@ -297,3 +297,22 @@ Coord getNeighbour(int l, int c, int angle){
     }
     return cord;
 }
+
+Coord avaliableNeighbour(int l, int c)
+{
+    Coord co[] = {getNeighbour(l, c, 0), getNeighbour(l, c, 45), getNeighbour(l, c, 135), getNeighbour(l, c, 180), getNeighbour(l, c, 225), getNeighbour(l, c, 315)};
+    int i;
+    for(i=0; i<6; i++)
+    {
+        if(co[i].x!=MAXMATRIZL && co[i].y!=MASMATRIZC)
+        {
+            if(a->matriz[co[i].x][co[i].y].ocup==0)
+            {
+                return co[i];            
+            }        
+        }
+    }
+    co[0].x = MAXMATRIZL;
+    co[0].y = MAXMATRIZC;
+    return co[0];
+}
