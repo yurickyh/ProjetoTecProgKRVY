@@ -20,7 +20,7 @@ typedef enum{
 //Colour = outro numero -> é base
 typedef struct{
     int vida;
-    int colour; //Identificação da base	
+    int colour; //Identificação da base 
 } Base;
 
 typedef struct{
@@ -53,7 +53,7 @@ typedef struct{
 
 void CriaArena();
 void Atualiza();
-Exercito *InsereExercito(int x, int y, INSTR *p);
+Exercito *InsereExercito(int x, int y, INSTR *p, FILE *display);
 Base *createBase();
 void destroiBase(Base** b);
 void RemoveExercito(Exercito *e, Exercito** ex);
