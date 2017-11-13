@@ -60,3 +60,4 @@ void RemoveExercito(Exercito *e, Exercito** ex);
 void acertaMatriz();
 void Sistema(Maquina *m, char code, int op);
 Coord getNeighbour(int l, int c, int angle);
+Coord avaliableNeighbour(int l, int c);
