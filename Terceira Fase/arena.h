@@ -1,8 +1,8 @@
 #include "maq.h"
 
-#define MAXMAQ 100
-#define MAXEXERC 20
-#define ROBOSONEXERC 5
+#define MAXMAQ 4
+#define MAXEXERC 2
+#define ROBOSONEXERC 2
 #define MAXMATRIZL 4
 #define MAXMATRIZC 8
 #define BASELIFE 20
