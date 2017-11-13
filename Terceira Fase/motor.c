@@ -29,57 +29,8 @@ INSTR programa[] = {
 };
 
 int main(int ac, char **av) {
-
-    CriaArena();
-    display = popen("java Map > map.txt", "r");
-    pclose(display);
-    char s[1024];
-    char * pch;
-    int i=0, j=0, count=0;
-    display = fopen("map.txt", "r");
-    fgets(s, 1024, display);
-    pch = strtok(s, " ");
-    while(pch!=NULL)
-    {
-        if(count==0)
-        {
-            a->matriz[i][j].terrain = pch;
-            count++;
-        }
-        else if(count==1)
-        {
-            a->matriz[i][j].cristal = pch-'0';
-            count++;        
-        }
-        else if(count==2)
-        {
-            a->matriz[i][j].ocup = pch-'0';
-            count++;        
-        }
-        else if(count==3)
-        {
-            a->matriz[i][j].baseCoulour = pch-'0';
-            count = 0;
-            if(j+1==MAXMATRIZC)
-            {
-                i++;
-                j=0;
-            }
-            else
-            {
-                j++;            
-            }        
-        }
-        if(i==MAXMATRIZL)
-        {
-            break;        
-        }
-        pch = strtok(NULL, " ");
-    }
-    fclose(display);
-    printf("Teste %2d\n", a->matriz[2][2].cristal);
-    
-    /*int lin = 0, col = 0, color = 0;
+        
+    int lin = 0, col = 0, color = 0;
     char *TER[] = {
         "road",
         "mountain",
@@ -119,7 +70,7 @@ int main(int ac, char **av) {
             fflush(display);   
         }
     }
-    pclose(display);*/
+    pclose(display);
 
     return 0;
 }
