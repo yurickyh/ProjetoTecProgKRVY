@@ -201,7 +201,7 @@ void Sistema(Maquina *m, char code, int op){
                 return;
             }
             if(a->matriz[tmp.x][tmp.y].ocup == MAXMAQ+1){
-                printf("Tentativade ataque em uma base. Não é possível atacar uma base diretamente.\n");
+                printf("Tentativa de ataque em uma base. Não é possível atacar uma base diretamente.\n");
                 return;
             }
             a->robos[a->matriz[tmp.x][tmp.y].ocup-1]->vida = a->robos[a->matriz[tmp.x][tmp.y].ocup-1]->vida - 1;
@@ -213,78 +213,84 @@ void Sistema(Maquina *m, char code, int op){
 Coord getNeighbour(int l, int c, int angle){
     Coord cord;
     switch (angle){
-        case 45:
-            if(c+1 == MAXMATRIZC || (l==0 && c%2!=0)) {
+        case 0:
+            if(c+1 == MAXMATRIZC) {
                 cord.x = MAXMATRIZL;
                 cord.y = MAXMATRIZC;
             } else {
-                if(c%2==0) {
-                    cord.x = l;
-                    cord.y = c+1;
-                } else {
-                    cord.x = l-1;
-                    cord.y = c+1;
-                }
+                cord.x = l;
+                cord.y = c+1;                
             }
             break;
-        case 90:
-            if(l==0) {
+        case 45:
+            if(l==0 || (l%2!=0 && c+1==MAXMATRIZC)) {
                 cord.x = MAXMATRIZL;
                 cord.y = MAXMATRIZC;
             } else {
-                cord.x = l-1;
-                cord.y = c;
+                if(l%2==0)
+                {
+                    cord.x = l-1;
+                    cord.y = c;
+                }
+                else
+                {
+                    cord.x = l-1;
+                    cord.y = c+1;
+                }                
             }
             break;
         case 135:
-            if(c == 0 || (l==0 && c%2!=0)){
+            if(l == 0 || (c==0 && l%2==0)){
                 cord.x = MAXMATRIZL;
                 cord.y = MAXMATRIZC;
             } else {
-                if(c%2==0) {
-                    cord.x = l;
+                if(l%2==0) {
+                    cord.x = l-1;
                     cord.y = c-1;
                 } else{
                     cord.x = l-1;
-                    cord.y = c-1;
+                    cord.y = c;
                 }
+            }
+            break;
+        case 180:
+            if(c == 0) {
+                cord.x = MAXMATRIZL;
+                cord.y = MAXMATRIZC;
+            } else {
+                cord.x = l;
+                cord.y = c-1;
             }
             break;
         case 225:
-            if(c == 0 || (l==MAXMATRIZL-1 && c%2==0)) {
+            if(l+1==MAXMATRIZL || (l%2==0 && c==0)) {
                 cord.x = MAXMATRIZL;
                 cord.y = MAXMATRIZC;
             } else {
-                if(c%2!=0) {
-                    cord.x = l;
-                    cord.y = c-1;
-                } else {
+                if(l%2==0)
+                {
                     cord.x = l+1;
                     cord.y = c-1;
                 }
-            }
-            break;
-        case 270:
-            if(l==MAXMATRIZL-1) {
-                cord.x = MAXMATRIZL;
-                cord.y = MAXMATRIZC;
-            } else {
-                cord.x = l+1;
-                cord.y = c;
+                else
+                {
+                    cord.x = l+1;
+                    cord.y = c;
+                }
             }
             break;
         case 315:
-            if(c == MAXMATRIZC-1 || (l==MAXMATRIZL-1 && c%2==0)) {
+            if(l+1 == MAXMATRIZL || (c+1==MAXMATRIZC && l%2!=0)) {
                 cord.x = MAXMATRIZL;
                 cord.y = MAXMATRIZC;
             } else {
-                if(c%2==0){
+                if(c%2!=0){
                     cord.x = l+1;
                     cord.y = c+1;
                 }
                 else{
-                    cord.x = l;
-                    cord.y = c+1;
+                    cord.x = l+1;
+                    cord.y = c;
                 }
             }
             break;
