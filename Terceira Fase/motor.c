@@ -1,11 +1,14 @@
 #include <stdio.h>
 #include "arena.h"
 #include <string.h>
+#define linhas 4
+#define colunas 8
 
 FILE *display;
 INSTR programa[] = {
-    /*FATORIAL:
-    {PUSH, {NUM,  6}}, //0
+    //FATORIAL. Para numeros muito grandes é preciso aumentar o valor da variavel INSTRNUMBER ou aumentar o numero do argumento passado na funcao Atualiza():
+    //Descomentar para o teste 6.
+    /*{PUSH, {NUM,  6}}, //0
     {CALL, {NUM,  4}}, //1
     {PRN,  {NUM,  0}}, //2
     {END,  {NUM,  0}}, //3
@@ -26,10 +29,36 @@ INSTR programa[] = {
     {MUL,  {NUM,  0}}, //18
     {FRE,  {NUM,  1}}, //19
     {RET,  {NUM,  0}}  //20*/
+     
+    //Descomentar para o teste 7
+    /*{MOVE, {ACAO, 315}},
+    {MOVE, {ACAO, 270}},
+    {MOVE, {ACAO,  45}}*/
+
+    //Descomentar para o teste 8
+    /*{RECO, {ACAO, 315}},
+    {MOVE, {ACAO, 270}},
+    {RECO, {ACAO, 270}}*/
+
+    //Descomentar para o teste 9
+    /*{RECO, {ACAO, 315}},
+    {MOVE, {ACAO, 270}},
+    {DEPO, {ACAO,  45}}*/
+
+    //Descomentar para o teste 10
+    /*{MOVE, {ACAO, 315}},
+    {MOVE, {ACAO, 270}},
+    {ATAQ, {ACAO, 270}}*/
+
+    //Descomentar para o teste 11
+    /*{PUSH, {CEL, 1,{river, 2, 10, 6}}},
+    {ATR, {NUM, 0}},
+    {PRN, {NUM, 0}},
+    {END,  {NUM,  0}}*/
 };
 
 int main(int ac, char **av) {
-        
+
     int lin = 0, col = 0, color = 0;
     char *TER[] = {
         "road",
@@ -57,15 +86,16 @@ int main(int ac, char **av) {
     for (lin = 0; lin < MAXMATRIZL; lin++){
         for (col = 0; col < MAXMATRIZC; col++){
             if(a->matriz[lin][col].baseColour == 1){
-                printf("\nEntrou aqui");
                 fprintf(display, "base base1r.png %d %d %d\n", a->matriz[lin][col].baseColour, lin, col); //criar a base vermelha            
             }
             else if(a->matriz[lin][col].baseColour == 2){
                 fprintf(display, "base base2r.png %d %d %d\n", a->matriz[lin][col].baseColour, lin, col); //criar a base azul
             }
             else {
-                fprintf(display, "cel %d %d %s %s\n", lin, col, Color[a->matriz[lin][col].terrain]);
-                fprintf(display, "cristal %d %d %d\n", lin, col, a->matriz[lin][col].cristal);
+                fprintf(display, "cel %d %d %s\n", lin, col, Color[a->matriz[lin][col].terrain]);
+                if(a->matriz[lin][col].cristal != 0){
+                    fprintf(display, "cristal %d %d %d\n", lin, col, a->matriz[lin][col].cristal);
+                }
             }     
             fflush(display);   
         }
