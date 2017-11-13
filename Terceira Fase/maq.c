@@ -62,6 +62,7 @@ Maquina *cria_maquina(INSTR *p) {
     m->cristal = 0;
     m->vida = 3;
     m->index = 0;
+    m->count = 0;
     return m;
 }
 
