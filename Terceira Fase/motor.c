@@ -72,10 +72,10 @@ int main(int ac, char **av) {
     };
     CriaArena();
     Celula c[linhas][colunas] = {
-        {{road, 0, 0, 0}, {road, 2, 0, 0}, {road, 2, 0, 0}, {road, 0, 0, 0}, {river, 3, 0, 0}, {mountain, 4, 0, 0}, {road, 2, 0, 0}, {road, 2, 0, 0}}, 
+        {{road, 0, 0, 1}, {road, 2, 0, 0}, {road, 2, 0, 0}, {road, 0, 0, 0}, {river, 3, 0, 0}, {mountain, 4, 0, 0}, {road, 2, 0, 0}, {road, 2, 0, 0}}, 
         {{river, 4, 0, 0}, {river, 3, 0, 0}, {mountain, 2, 0, 0}, {road, 2, 0, 0}, {road, 1, 0, 0}, {road, 1, 0, 0}, {river, 0, 0, 0}, {river, 1, 0, 0}},
         {{river, 2, 0, 0}, {river, 2, 0, 0}, {river, 2, 0, 0}, {road, 2, 0, 0}, {road, 2, 0, 0}, {road, 2, 0, 0}, {mountain, 2, 0, 0}, {mountain, 3, 0, 0}},
-        {{river, 2, 0, 0}, {river, 1, 0, 0}, {road, 2, 0, 0}, {road, 1, 0, 0}, {road, 2, 0, 0}, {road, 2, 0, 0}, {road, 2, 0, 0}, {road, 2, 0, 0}}
+        {{river, 2, 0, 0}, {river, 1, 0, 0}, {road, 2, 0, 0}, {road, 1, 0, 0}, {road, 2, 0, 0}, {road, 2, 0, 0}, {road, 2, 0, 0}, {road, 2, 0, 2}}
     };
     memcpy(a->matriz, c, sizeof(a->matriz));
     display = popen("./apres", "w"); //criacao do pipe para apres
@@ -85,7 +85,16 @@ int main(int ac, char **av) {
     }  
     for (lin = 0; lin < linhas; lin++){
         for (col = 0; col < colunas; col++){
-            fprintf(display, "cel %d %d %s\n", lin, col, Color[a->matriz[lin][col].terrain]);         
+            if(a->matriz[lin][col].baseColour == 1){
+                printf("\nEntrou aqui");
+                fprintf(display, "base base1.png %d %d %d\n", a->matriz[lin][col].baseColour, lin, col);//criar a base vermelha            
+            }
+            else if(a->matriz[lin][col].baseColour == 2){
+                fprintf(display, "base base2.png %d %d %d\n", a->matriz[lin][col].baseColour, lin, col);//criar a base azul
+            }
+            else {
+                fprintf(display, "cel %d %d %s\n", lin, col, Color[a->matriz[lin][col].terrain]);    
+            }     
             fflush(display);   
         }
     }
