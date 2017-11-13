@@ -13,6 +13,7 @@ typedef struct {
     int cristal;
     int vida; //se há ataque, faz sentido o rebo ter uma barra de vida
     int index; //index no vetor de endereços da arena
+    int count;
 } Maquina;
 
 Maquina *cria_maquina(INSTR *p);
