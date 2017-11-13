@@ -69,24 +69,21 @@ Exercito *InsereExercito(int x, int y, INSTR *p, FILE *display){ //x e y = coord
     a->matriz[x][y].ocup = MAXMAQ+1;
     for(i=0;i<ROBOSONEXERC;i++){
         Maquina *maq = cria_maquina(p);
-        //Robos spawnam em cima da propria base
-        maq->position[0] = x;
-        maq->position[1] = y;
-        maq->index = a->robosTopo;
-        a->robos[a->robosTopo++] = maq;
-        if(a->matriz[x][y].baseColour == 1){
-            /*
-                CRIAR AS POSIÇÕES AQUI E COLOCAR COMO ARGUMENTO NO FPRINTF
-
-
-            */
-            fprintf(display, "rob GILEAD_A.png"); 
-            fprintf(display, "%d %d %d %d %d", a->robosTopo, , , , ); 
-
+        Coord aux = avaliableNeighbour(x, y);
+        if(aux.x!=MAXMATRIZL && aux.y!=MAXMATRIZC){
+            maq->position[0] = aux.x;
+            maq->position[1] = aux.y;
+            maq->index = a->robosTopo;
+            a->robos[a->robosTopo++] = maq;
+            a->matriz[aux.x][aux.y].ocup = maq->index; 
+        }
+        if(a->matriz[x][y].baseColour == 1){           
+            fprintf(display, "rob robo1.png"); 
+            fprintf(display, "%d %d %d %d %d", maq->index, maq->position[0], maq->position[1], maq->position[0], maq->position[1]);
         }
         if(a->matriz[x][y].baseColour == 2){
-            fprintf(display, "rob GILEAD_A.png"); 
-            fprintf(display, "%d %d %d %d %d", a->robosTopo, , , , ); 
+            fprintf(display, "rob robo2.png"); 
+            fprintf(display, "%d %d %d %d %d", maq->index, maq->position[0], maq->position[1], maq->position[0], maq->position[1]); 
         }
         e->robots[i] = maq;
     }    
