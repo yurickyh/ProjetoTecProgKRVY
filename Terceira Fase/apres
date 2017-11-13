@@ -7,7 +7,7 @@ from math import *
 pg.init()                                 # inicialização do sistema
 
 # altura e largura da arena, em células
-H, W = 15,15
+H, W = 4,8
 
 # largura da célula
 l = 30
@@ -92,9 +92,9 @@ class cell:
 
 # Construção da matriz que representa a arena
 arena = []
-for i in range(15):
+for i in range(H):
     arena.append([])
-    for j in range(15):
+    for j in range(W):
         arena[i].append(cell(i,j))
         arena[i][j].draw()
 
@@ -118,19 +118,27 @@ for line in fileinput.input():
         robs.append(Robô(r[1]))
         continue
 
+    if r[0] == 'cel':
+        ci, cj, cr, cg, cb = list(map(int, r[1:]))
+        arena[ci][cj].cor = (cr, cg, cb)
+        arena[ci][cj].draw()
+        atu()
+        pg.time.wait(100)
+        continue
     # linha de movimentação:
     # robô, corrdenadas originais, coordenadas finais
     ri, oi, oj, di, dj = list(map(int, r))
-
+    
     # redesenha a célula original (apaga o robô)
     if 0 <= oi  < W and 0 <= oj < H:
         arena[oi][oj].draw()
     # desenha o robô na célula de destino
     if 0 <= di  < W and 0 <= dj < H and ri < len(robs):
         robs[ri].draw(di,dj)
-
     # tempo de espera para atualização, apenas para testes
     pg.time.wait(100)
+
+    
 
     atu()
 
