@@ -67,6 +67,13 @@ Exercito *InsereExercito(int x, int y, INSTR *p, FILE *display){ //x e y = coord
     a->matriz[x][y].baseColour = e->base->colour;
     a->matriz[x][y].cristal = 0;
     a->matriz[x][y].ocup = MAXMAQ+1;
+    if(a->matriz[x][y].baseColour == 1){
+        fprintf(display, "base base1r.png %d %d %d\n", a->matriz[x][y].baseColour, x, y); //criar a base vermelha        
+    }
+    if(a->matriz[x][y].baseColour == 2){
+        fprintf(display, "base base2r.png %d %d %d\n", a->matriz[x][y].baseColour, x, y); //criar a base azul
+    }
+    fflush(display);  
     for(i=0;i<ROBOSONEXERC;i++){
         Maquina *maq = cria_maquina(p);
         Coord aux = avaliableNeighbour(x, y);
@@ -77,13 +84,13 @@ Exercito *InsereExercito(int x, int y, INSTR *p, FILE *display){ //x e y = coord
             a->robos[a->robosTopo++] = maq;
             a->matriz[aux.x][aux.y].ocup = maq->index; 
         }
-        if(a->matriz[x][y].baseColour == 1){           
-            fprintf(display, "rob robo1.png"); 
-            fprintf(display, "%d %d %d %d %d", maq->index, maq->position[0], maq->position[1], maq->position[0], maq->position[1]);
+        if(a->matriz[x][y].baseColour == 1){ 
+            fprintf(display, "rob robo1.png %d %d %d\n", maq->index, maq->position[0], maq->position[1]);            
+            fflush(display); 
         }
         if(a->matriz[x][y].baseColour == 2){
-            fprintf(display, "rob robo2.png"); 
-            fprintf(display, "%d %d %d %d %d", maq->index, maq->position[0], maq->position[1], maq->position[0], maq->position[1]); 
+            fprintf(display, "rob robo2.png %d %d %d\n", maq->index, maq->position[0], maq->position[1]);
+            fflush(display); 
         }
         e->robots[i] = maq;
     }    
