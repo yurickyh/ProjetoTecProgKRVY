@@ -168,7 +168,7 @@ void Sistema(Maquina *m, char code, int op){
             if(a->matriz[tmp2.x][tmp2.y].ocup != MAXMAQ+1){
                 a->matriz[tmp2.x][tmp2.y].ocup = 0;
             }
-            a->matriz[tmp.x][tmp.y].ocup = m->index+1;
+            a->matriz[tmp.x][tmp.y].ocup = m->index;
             printf("Andou para [%1d][%1d].\n", tmp.x, tmp.y);
             break;
         case 'D':
@@ -222,8 +222,8 @@ void Sistema(Maquina *m, char code, int op){
                 printf("Tentativa de ataque em uma base. Não é possível atacar uma base diretamente.\n");
                 return;
             }
-            a->robos[a->matriz[tmp.x][tmp.y].ocup-1]->vida = a->robos[a->matriz[tmp.x][tmp.y].ocup-1]->vida - 1;
-            printf("Efetuou o ataque na célula [%1d][%1d] atingindo o robô %3d.\n", tmp.x, tmp.y, a->matriz[tmp.x][tmp.y].ocup-1);
+            a->robos[a->matriz[tmp.x][tmp.y].ocup]->vida = a->robos[a->matriz[tmp.x][tmp.y].ocup]->vida - 1;
+            printf("Efetuou o ataque na célula [%1d][%1d] atingindo o robô %3d.\n", tmp.x, tmp.y, a->matriz[tmp.x][tmp.y].ocup);
             break;
     }
 }
