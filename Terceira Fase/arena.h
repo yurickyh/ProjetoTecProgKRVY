@@ -36,7 +36,7 @@ typedef struct{
 } Exercito;
 
 typedef struct{
-    Maquina* robos[MAXMAQ];
+    Maquina* robos[MAXMAQ+1];
     int robosTopo;
     Celula matriz[MAXMATRIZL][MAXMATRIZC];
     Exercito* exerc[MAXEXERC];
