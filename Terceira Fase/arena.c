@@ -16,7 +16,7 @@ static void Fatal(char *msg, int cod) {
 void CriaArena(){
     a = malloc(sizeof(Arena));
     if(!a) Fatal("Memória insuficiente", 4);
-    a->robosTopo = 0;
+    a->robosTopo = 1;
     a->exercTopo = 0;
 }
 
@@ -85,11 +85,11 @@ Exercito *InsereExercito(int x, int y, INSTR *p, FILE *display){ //x e y = coord
             a->matriz[aux.x][aux.y].ocup = maq->index; 
         }
         if(a->matriz[x][y].baseColour == 1){ 
-            fprintf(display, "rob robo1.png %d %d %d\n", maq->index, maq->position[0], maq->position[1]);            
+            fprintf(display, "rob robo1.png %d %d %d\n", maq->index-1, maq->position[0], maq->position[1]);            
             fflush(display); 
         }
         if(a->matriz[x][y].baseColour == 2){
-            fprintf(display, "rob robo2.png %d %d %d\n", maq->index, maq->position[0], maq->position[1]);
+            fprintf(display, "rob robo2.png %d %d %d\n", maq->index-1, maq->position[0], maq->position[1]);
             fflush(display); 
         }
         e->robots[i] = maq;
