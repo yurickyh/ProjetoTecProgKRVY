@@ -46,7 +46,7 @@ class Robô(pg.sprite.Sprite):
         s.image = pg.image.load(img)
         s.rect = s.image.get_rect()
 
-    def draw(s, i,j):
+    def draw(s,i,j):
         """
         Desenha o robô na célula (i,j)
         """
@@ -58,7 +58,7 @@ class Robô(pg.sprite.Sprite):
         # corrije a posição de acordo com o tamanho do sprite
         s.rect.topleft = [x-l1/2,y-h1/2]
         # desenha
-        scr.blit(s.image, s.rect)
+        scr.blit(s.image, s.rect)        
 
 class Base(pg.sprite.Sprite):
     """
@@ -84,7 +84,7 @@ class Base(pg.sprite.Sprite):
         # corrije a posição de acordo com o tamanho do sprite
         s.rect.topleft = [x-l1/2,y-h1/2]
         # desenha
-        scr.blit(s.image, s.rect)
+        scr.blit(s.image, s.rect)        
 
 class Cristal(pg.sprite.Sprite):
     """
@@ -174,8 +174,12 @@ for line in fileinput.input():
 
     # linha começando com 'rob', inclui um robô,
     # o segundo argumento na linha é a imagem   
-    if r[0] == 'rob':
+    if r[0] == 'rob':        
         robs.append(Robô(r[1]))
+        idRob, i, j = list(map(int, r[2:]))
+        robs[idRob].draw(i,j)
+        atu()
+        pg.time.wait(1000)
         continue
 
     if r[0] == 'cel':
@@ -183,18 +187,19 @@ for line in fileinput.input():
         arena[ci][cj].cor = (cr, cg, cb)
         arena[ci][cj].draw()
         atu()
-        pg.time.wait(100)
+        pg.time.wait(400)
         continue
 
     if r[0] == 'base':
         bass.append(Base(r[1]))
         idBase, i, j = list(map(int, r[2:]))
+        arena[i][j].draw()
         bass[idBase - 1].draw(i,j)
         atu();
         continue
 
     if r[0] == 'cristal':
-        i, j, qtd_cristal = list(map(int, r[2:]))
+        i, j, qtd_cristal = list(map(int, r[1:]))
         Cristal(qtd_cristal).draw(i,j);
         atu();
         continue
@@ -210,7 +215,7 @@ for line in fileinput.input():
     if 0 <= di  < W and 0 <= dj < H and ri < len(robs):
         robs[ri].draw(di,dj)
     # tempo de espera para atualização, apenas para testes
-    pg.time.wait(100)
+    pg.time.wait(1000)
 
     
 
