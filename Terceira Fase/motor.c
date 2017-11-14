@@ -8,7 +8,7 @@ FILE *display;
 INSTR programa[] = {
     //FATORIAL. Para numeros muito grandes é preciso aumentar o valor da variavel INSTRNUMBER ou aumentar o numero do argumento passado na funcao Atualiza():
     //Descomentar para o teste 6.
-    /*{PUSH, {NUM,  6}}, //0
+    {PUSH, {NUM,  6}}, //0
     {CALL, {NUM,  4}}, //1
     {PRN,  {NUM,  0}}, //2
     {END,  {NUM,  0}}, //3
@@ -28,7 +28,7 @@ INSTR programa[] = {
     {RCE,  {NUM,  1}}, //17
     {MUL,  {NUM,  0}}, //18
     {FRE,  {NUM,  1}}, //19
-    {RET,  {NUM,  0}}  //20*/
+    {RET,  {NUM,  0}}  //20
      
     //Descomentar para o teste 7
     /*{MOVE, {ACAO, 315}},
@@ -84,22 +84,16 @@ int main(int ac, char **av) {
         return 1;
     }  
     for (lin = 0; lin < MAXMATRIZL; lin++){
-        for (col = 0; col < MAXMATRIZC; col++){
-            if(a->matriz[lin][col].baseColour == 1){
-                fprintf(display, "base base1r.png %d %d %d\n", a->matriz[lin][col].baseColour, lin, col); //criar a base vermelha            
-            }
-            else if(a->matriz[lin][col].baseColour == 2){
-                fprintf(display, "base base2r.png %d %d %d\n", a->matriz[lin][col].baseColour, lin, col); //criar a base azul
-            }
-            else {
-                fprintf(display, "cel %d %d %s\n", lin, col, Color[a->matriz[lin][col].terrain]);
-                if(a->matriz[lin][col].cristal != 0){
-                    fprintf(display, "cristal %d %d %d\n", lin, col, a->matriz[lin][col].cristal);
-                }
-            }     
+        for (col = 0; col < MAXMATRIZC; col++){      
+            fprintf(display, "cel %d %d %s\n", lin, col, Color[a->matriz[lin][col].terrain]);
+            if(a->matriz[lin][col].cristal != 0){
+                fprintf(display, "cristal %d %d %d\n", lin, col, a->matriz[lin][col].cristal);
+            }                 
             fflush(display);   
         }
     }
+    InsereExercito(2,2, programa, display);
+    InsereExercito(3,7, programa, display);
     pclose(display);
 
     return 0;
