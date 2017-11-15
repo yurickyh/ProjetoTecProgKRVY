@@ -42,6 +42,9 @@ void Atualiza(int rodadas, FILE *display){
         int j;
         for(j=0;j<=MAXMAQ;j++){
             if(a->robos[j]!=NULL && a->robos[j]->vida <= 0){//Checar se o robo ficou sem vida
+                //remover os robos na interface
+                fprintf(display, "clean %d %d\n", a->robos[j].position[0], a->robos[j].position[1]);
+                fprintf(display);
                 destroi_maquina(&a->robos[j]);
             }
             if(a->robos[j]!=NULL){
@@ -51,7 +54,7 @@ void Atualiza(int rodadas, FILE *display){
             for(y=0;y<MAXEXERC;y++){
                 if(a->exerc[y]!=NULL){
                     if(a->exerc[y]->base->vida <= 0){//Checar se alguma base ficou sem vida
-                        RemoveExercito(a->exerc[y], &a->exerc[y]);
+                        RemoveExercito(a->exerc[y], &a->exerc[y], display);
                     }
                 }
             }
@@ -117,10 +120,13 @@ void destroiBase(Base** b){
     *b = NULL;
 }
 
-void RemoveExercito(Exercito *e, Exercito** ex){
+void RemoveExercito(Exercito *e, Exercito** ex, FILE *display){
     int i = e->base->colour;
     int j;
     for(j=(5*(i-1));j<(i*5);j++){
+        //parte para remover os robos do mapa
+        fprintf(display, "clean %d %d\n", a->robos[j].position[0], a->robos[j].position[1]);
+        fprintf(display);
         destroi_maquina(&a->robos[j]);
     }
     a->baseCount[i] = 0;
@@ -157,11 +163,11 @@ void Sistema(Maquina *m, char code, int op, FILE *display){
             printf("MAQ index: %d\n", m->index);
             if(tmp.x == MAXMATRIZL || tmp.y == MAXMATRIZC){
                 printf("Tentativa de movimento para célula inválida. %d\n", m->index);
-                return;
+                break;
             }
             if(a->matriz[tmp.x][tmp.y].ocup != 0){
                 printf("Tentativa de movimento para célula ocupada. %d\n", m->index);
-                return;
+                break;
             }
             fprintf(display, "%d %d %d %d %d\n", m->index-1, m->position[0], m->position[1], tmp.x, tmp.y);
             fflush(display);
@@ -209,29 +215,31 @@ void Sistema(Maquina *m, char code, int op, FILE *display){
             tmp = getNeighbour(m->position[0], m->position[1], op);
             if(tmp.x == MAXMATRIZL || tmp.y == MAXMATRIZC){
                 printf("Tentativa de recolher cristal em célula inválida.\n");
-                return;
+                break;
             }
             if(a->matriz[tmp.x][tmp.y].ocup != 0){
                 printf("Tentativa de recolher cristal em célula ocupada.\n");
-                return;
+                break;
             }
             if(a->matriz[tmp.x][tmp.y].cristal == 0){
                 printf("Não há cristais para recolher nesta célula.\n");
-                return;
+                break;
             }
             m->cristal = m->cristal + a->matriz[tmp.x][tmp.y].cristal;
             a->matriz[tmp.x][tmp.y].cristal = 0;
+            fprintf(display, "clean %d %d\n", tmp.x, tmp.y);
+            fflush(display);
             printf("Recolheu da célula [%1d][%1d].\n", tmp.x, tmp.y);
             break;
         case 'A':
             tmp = getNeighbour(m->position[0], m->position[1], op);
             if(a->matriz[tmp.x][tmp.y].ocup == 0){
                 printf("Tentativa de ataque em célula desocupada.\n");
-                return;
+                break;
             }
             if(a->matriz[tmp.x][tmp.y].ocup == MAXMAQ+1){
                 printf("Tentativa de ataque em uma base. Não é possível atacar uma base diretamente.\n");
-                return;
+                break;
             }
             a->robos[a->matriz[tmp.x][tmp.y].ocup]->vida = a->robos[a->matriz[tmp.x][tmp.y].ocup]->vida - 1;
             printf("Efetuou o ataque na célula [%1d][%1d] atingindo o robô %3d.\n", tmp.x, tmp.y, a->matriz[tmp.x][tmp.y].ocup);
