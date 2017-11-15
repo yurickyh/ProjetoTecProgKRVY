@@ -29,9 +29,6 @@ INSTR programa[] = {
     {MUL,  {NUM,  0}}, //18
     {FRE,  {NUM,  1}}, //19
     {RET,  {NUM,  0}}  //20*/
-    {DEPO, {ACAO,  225}},
-    {END, {NUM, 0}}
-
      
     //Descomentar para o teste 7
     /*{MOVE, {ACAO, 315}},
@@ -95,10 +92,11 @@ int main(int ac, char **av) {
             fflush(display);   
         }
     }
-    InsereExercito(0, 0, programa, display);
-    InsereExercito(3, 7, programa, display);
+    a->exerc[a->exercTopo++] = InsereExercito(0, 0, programa, display);
+    a->exerc[a->exercTopo++] = InsereExercito(3, 7, programa, display);
     Atualiza(1, display);
+    RemoveExercito(a->exerc[0], &a->exerc[0], display);
+    RemoveExercito(a->exerc[1], &a->exerc[1], display);
     pclose(display);
-
     return 0;
 }
