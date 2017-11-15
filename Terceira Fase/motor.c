@@ -8,7 +8,7 @@ FILE *display;
 INSTR programa[] = {
     //FATORIAL. Para numeros muito grandes é preciso aumentar o valor da variavel INSTRNUMBER ou aumentar o numero do argumento passado na funcao Atualiza():
     //Descomentar para o teste 6.
-    {PUSH, {NUM,  6}}, //0
+    /*{PUSH, {NUM,  6}}, //0
     {CALL, {NUM,  4}}, //1
     {PRN,  {NUM,  0}}, //2
     {END,  {NUM,  0}}, //3
@@ -28,7 +28,10 @@ INSTR programa[] = {
     {RCE,  {NUM,  1}}, //17
     {MUL,  {NUM,  0}}, //18
     {FRE,  {NUM,  1}}, //19
-    {RET,  {NUM,  0}}  //20
+    {RET,  {NUM,  0}}  //20*/
+    {DEPO, {ACAO,  225}},
+    {END, {NUM, 0}}
+
      
     //Descomentar para o teste 7
     /*{MOVE, {ACAO, 315}},
@@ -92,8 +95,9 @@ int main(int ac, char **av) {
             fflush(display);   
         }
     }
-    InsereExercito(2,2, programa, display);
-    InsereExercito(3,7, programa, display);
+    InsereExercito(0, 0, programa, display);
+    InsereExercito(3, 7, programa, display);
+    Atualiza(1, display);
     pclose(display);
 
     return 0;
