@@ -21,6 +21,7 @@ typedef enum{
 typedef struct{
     int vida;
     int colour; //Identificação da base 
+    int position[2];
 } Base;
 
 typedef struct{
