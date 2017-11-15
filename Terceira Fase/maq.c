@@ -78,7 +78,8 @@ void destroi_maquina(Maquina** maq) {
 #define exec (&m->exec)
 #define prg (m->prog)
 
-void exec_maquina(Maquina *m, int n) {
+void exec_maquina(Maquina *m, int n, FILE *display) {
+    //Agora repassando o argumento display para repassa-lo em Sistema()
     char *TYP[] = {
         "NUM",
         "ACAO",
@@ -317,16 +318,16 @@ void exec_maquina(Maquina *m, int n) {
                 }
                 break;
             case MOVE:
-                Sistema(m, 'M', arg.val);
+                Sistema(m, 'M', arg.val, display);
                 break;
             case RECO:
-                Sistema(m, 'R', arg.val);
+                Sistema(m, 'R', arg.val, display);
                 break;
             case DEPO:
-                Sistema(m, 'D', arg.val);
+                Sistema(m, 'D', arg.val, display);
                 break;
             case ATAQ:
-                Sistema(m, 'A', arg.val);
+                Sistema(m, 'A', arg.val, display);
                 break;
         }
         D(imprime(pil,5));
