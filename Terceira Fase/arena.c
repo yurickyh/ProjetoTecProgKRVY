@@ -174,7 +174,7 @@ void Sistema(Maquina *m, char code, int op, FILE *display){
                 printf("Tentativa de movimento para célula ocupada. %d\n", m->index);
                 break;
             }
-            fprintf(display, "%d %d %d %d %d\n", m->index-1, m->position[0], m->position[1], tmp.x, tmp.y);
+            fprintf(display, "%d %d %d %d %d %d\n", m->index-1, m->position[0], m->position[1], tmp.x, tmp.y, m->vida);
             fflush(display);
             fprintf(display, "cristal %d %d %d\n", m->position[0], m->position[1], a->matriz[m->position[0]][m->position[1]].cristal);
             fflush(display);
@@ -247,6 +247,8 @@ void Sistema(Maquina *m, char code, int op, FILE *display){
                 break;
             }
             a->robos[a->matriz[tmp.x][tmp.y].ocup]->vida = a->robos[a->matriz[tmp.x][tmp.y].ocup]->vida - 1;
+            fprintf(display, "%d %d %d %d %d %d\n", m->index-1, m->position[0], m->position[1], m->position[0], m->position[1], m->vida);
+            fflush(display);
             printf("Efetuou o ataque na célula [%1d][%1d] atingindo o robô %3d.\n", tmp.x, tmp.y, a->matriz[tmp.x][tmp.y].ocup);
             break;
     }

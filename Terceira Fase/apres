@@ -38,15 +38,16 @@ class Robô(pg.sprite.Sprite):
     """
     Representa um Robô, possui uma imagem
     """
-    def __init__(s, img):
+    def __init__(s, img, id_robo):
         """
         Construtor, img é o nome do arquivo com a imagem
         """
         pg.sprite.Sprite.__init__(s)
         s.image = pg.image.load(img)
         s.rect = s.image.get_rect()
+        s.id = id_robo
 
-    def draw(s,i,j):
+    def draw(s,i,j,vida):
         """
         Desenha o robô na célula (i,j)
         """
@@ -58,7 +59,18 @@ class Robô(pg.sprite.Sprite):
         # corrije a posição de acordo com o tamanho do sprite
         s.rect.topleft = [x-l1/2,y-h1/2]
         # desenha
-        scr.blit(s.image, s.rect)        
+        scr.blit(s.image, s.rect)
+
+        # coloca id do robo (soma + 1 pois id dado no objeto é para identificação na lista de robôs)
+        aux_id = int(s.id) + 1
+        text_id = myfont.render(str(aux_id), False, (0, 0, 0))
+        scr.blit(text_id, s.rect)
+
+        # coloca vida do robo
+        text_vida = myfont.render(str(vida), False, (0, 0, 0))
+        s.rect.topleft = [x+l1/3,y-h1/2]
+        scr.blit(text_vida, s.rect)
+
 
 class Base(pg.sprite.Sprite):
     """
@@ -84,7 +96,7 @@ class Base(pg.sprite.Sprite):
         # corrije a posição de acordo com o tamanho do sprite
         s.rect.topleft = [x-l1/2,y-h1/2]
         # desenha
-        scr.blit(s.image, s.rect)        
+        scr.blit(s.image, s.rect)     
 
 class Cristal(pg.sprite.Sprite):
     """
@@ -113,7 +125,8 @@ class Cristal(pg.sprite.Sprite):
         # desenha
         scr.blit(s.image, s.rect)
 
-        textsurface = myfont.render(str(s.num), False, (0, 0, 0))
+        textsurface = myfont.render(str(s.num), False, (255, 255, 255))
+        s.rect.topleft = [x+l1,y+h1/1.4]
         scr.blit(textsurface, s.rect)
 
 class cell:
@@ -176,11 +189,11 @@ for line in fileinput.input():
     # o segundo argumento na linha é a imagem   
     if r[0] == 'rob':    
     #Criar e posicionar o robo no mapa    
-        robs.append(Robô(r[1]))
+        robs.append(Robô(r[1], r[2]))
         idRob, i, j = list(map(int, r[2:]))
-        robs[idRob].draw(i,j)
+        robs[idRob].draw(i,j,3)
         atu()
-        pg.time.wait(100)
+        pg.time.wait(500)
         continue
 
     if r[0] == 'cel':
@@ -220,14 +233,14 @@ for line in fileinput.input():
 
     # linha de movimentação:
     # robô, corrdenadas originais, coordenadas finais
-    ri, oi, oj, di, dj = list(map(int, r))
+    ri, oi, oj, di, dj, vida = list(map(int, r))
     
     # redesenha a célula original (apaga o robô)
     if 0 <= oi  < W and 0 <= oj < H:
         arena[oi][oj].draw()
     # desenha o robô na célula de destino
     if 0 <= di  < W and 0 <= dj < H and ri < len(robs):
-        robs[ri].draw(di,dj)
+        robs[ri].draw(di,dj, vida)
     # tempo de espera para atualização, apenas para testes
     
     
