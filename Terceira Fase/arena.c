@@ -40,15 +40,15 @@ void Atualiza(int rodadas, FILE *display){
             exit(0);
         }
         int j;
-        for(j=0;j<=MAXMAQ;j++){
-            if(a->robos[j]!=NULL && a->robos[j]->vida <= 0){//Checar se o robo ficou sem vida
-                //remover os robos na interface
-                fprintf(display, "clean %d %d\n", a->robos[j].position[0], a->robos[j].position[1]);
-                fprintf(display);
-                destroi_maquina(&a->robos[j]);
+        for(j=0;j<MAXMAQ;j++){
+            if(a->robos[j+1]!=NULL && a->robos[j+1]->vida <= 0){//Checar se o robo ficou sem vida
+                //remover os robos na interface               
+                fprintf(display, "clean %d %d\n", a->robos[j+1]->position[0], a->robos[j+1]->position[1]);
+                fflush(display);
+                destroi_maquina(&a->robos[j+1]);
             }
-            if(a->robos[j]!=NULL){
-                exec_maquina(a->robos[j], INSTRNUMBER, display);
+            if(a->robos[j+1]!=NULL){
+                exec_maquina(a->robos[j+1], INSTRNUMBER, display);
             }
             int y;
             for(y=0;y<MAXEXERC;y++){
@@ -70,6 +70,8 @@ Exercito *InsereExercito(int x, int y, INSTR *p, FILE *display){ //x e y = coord
     a->matriz[x][y].baseColour = e->base->colour;
     a->matriz[x][y].cristal = 0;
     a->matriz[x][y].ocup = MAXMAQ+1;
+    e->base->position[0] = x;
+    e->base->position[1] = y;
     if(a->matriz[x][y].baseColour == 1){
         fprintf(display, "base base1r.png %d %d %d\n", a->matriz[x][y].baseColour, x, y); //criar a base vermelha        
     }
@@ -121,16 +123,19 @@ void destroiBase(Base** b){
 }
 
 void RemoveExercito(Exercito *e, Exercito** ex, FILE *display){
-    int i = e->base->colour;
+    int i = e->base->colour;      
     int j;
-    for(j=(5*(i-1));j<(i*5);j++){
+    a->matriz[e->base->position[0]][e->base->position[1]].ocup = 0;
+    for(j=(ROBOSONEXERC*(i-1));j<(i*ROBOSONEXERC);j++){
         //parte para remover os robos do mapa
-        fprintf(display, "clean %d %d\n", a->robos[j].position[0], a->robos[j].position[1]);
-        fprintf(display);
-        destroi_maquina(&a->robos[j]);
+        fprintf(display, "clean %d %d\n", a->robos[j+1]->position[0], a->robos[j+1]->position[1]);
+        fflush(display);
+        destroi_maquina(&a->robos[j+1]);
     }
     a->baseCount[i] = 0;
     acertaMatriz();
+    fprintf(display, "clean %d %d\n", e->base->position[0], e->base->position[1]);
+    fflush(display);
     destroiBase(&e->base);
     free(*ex);
     *ex = NULL;
