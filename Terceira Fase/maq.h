@@ -20,4 +20,4 @@ Maquina *cria_maquina(INSTR *p);
 
 void destroi_maquina(Maquina** maq);
 
-void exec_maquina(Maquina *m, int n);
+void exec_maquina(Maquina *m, int n, FILE *display);
