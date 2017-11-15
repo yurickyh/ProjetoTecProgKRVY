@@ -174,7 +174,8 @@ for line in fileinput.input():
 
     # linha começando com 'rob', inclui um robô,
     # o segundo argumento na linha é a imagem   
-    if r[0] == 'rob':        
+    if r[0] == 'rob':    
+    #Criar e posicionar o robo no mapa    
         robs.append(Robô(r[1]))
         idRob, i, j = list(map(int, r[2:]))
         robs[idRob].draw(i,j)
@@ -183,6 +184,7 @@ for line in fileinput.input():
         continue
 
     if r[0] == 'cel':
+    #Comando para pintar uma celula no mapa de acordo com o terreno
         ci, cj, cr, cg, cb = list(map(int, r[1:]))
         arena[ci][cj].cor = (cr, cg, cb)
         arena[ci][cj].draw()
@@ -191,6 +193,7 @@ for line in fileinput.input():
         continue
 
     if r[0] == 'base':
+    #Comando para printar uma base no mapa
         bass.append(Base(r[1]))
         idBase, i, j = list(map(int, r[2:]))
         arena[i][j].draw()
@@ -200,11 +203,19 @@ for line in fileinput.input():
         continue
 
     if r[0] == 'cristal':
+    #Comando para printar um cristal no mapa
         i, j, qtd_cristal = list(map(int, r[1:]))
         arena[i][j].draw()
         Cristal(qtd_cristal).draw(i,j);
         atu();
         pg.time.wait(100)
+        continue
+
+    if r[0] == 'clean':
+    #Comando para apagar uma celula/robo do mapa
+        i, j = list(map(int, r[1:]))
+        arena[i][j].draw()
+        atu()
         continue
 
     # linha de movimentação:
