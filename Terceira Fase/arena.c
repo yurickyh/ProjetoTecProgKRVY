@@ -48,7 +48,13 @@ void Atualiza(int rodadas, FILE *display){
                 destroi_maquina(&a->robos[j+1]);
             }
             if(a->robos[j+1]!=NULL){
-                exec_maquina(a->robos[j+1], INSTRNUMBER, display);
+                if(a->robos[j+1]->count!=0){//Se estiver com algum valor no contador, o robo não pode jogar essa rodada.
+                    printf("Robo %2d perde essa rodada.\n", a->robos[j+1]->index-1);
+                    a->robos[j+1]->count--;
+                }
+                else{
+                    exec_maquina(a->robos[j+1], INSTRNUMBER, display);
+                }
             }
             int y;
             for(y=0;y<MAXEXERC;y++){
@@ -157,6 +163,12 @@ void acertaMatriz(){
     }
 }
 
+char *TER[] = {
+        "road",
+        "mountain",
+        "river"
+    };
+
 void Sistema(Maquina *m, char code, int op, FILE *display){
     //Agora recebendo display para escrever a cada chamada de sistema
     //op = angulo da direcao
@@ -183,6 +195,21 @@ void Sistema(Maquina *m, char code, int op, FILE *display){
             tmp2.y = m->position[1];
             m->position[0] = tmp.x;
             m->position[1] = tmp.y;
+            //Checar para qual tipo de terreno o robo está se movendo e alterar o valor do seu contador de acordo.
+            char currentTerr[10];            
+            char mount[10];
+            char riv[10];
+            strcpy(currentTerr, TER[a->matriz[tmp.x][tmp.y].terrain]);
+            strcpy(riv, "river");
+            strcpy(mount, "mountain");
+            //Se for um tipo montanha, o robo perderá 1 rodada.
+            if(strcmp(currentTerr, mount) == 0){
+                m->count = 1;
+            }
+            //Se for um tipo rio, o robo perderá 2 rodadas.
+            if(strcmp(currentTerr, riv) == 0){
+                m->count = 2;
+            }            
             if(a->matriz[tmp2.x][tmp2.y].ocup != MAXMAQ+1){
                 a->matriz[tmp2.x][tmp2.y].ocup = 0;
             }
