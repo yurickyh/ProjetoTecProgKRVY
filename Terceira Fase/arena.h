@@ -52,12 +52,12 @@ typedef struct{
 } Coord;
 
 void CriaArena();
-void Atualiza();
+void Atualiza(int rodadas, FILE *display);
 Exercito *InsereExercito(int x, int y, INSTR *p, FILE *display);
 Base *createBase();
 void destroiBase(Base** b);
 void RemoveExercito(Exercito *e, Exercito** ex);
 void acertaMatriz();
-void Sistema(Maquina *m, char code, int op);
+void Sistema(Maquina *m, char code, int op, FILE *display);
 Coord getNeighbour(int l, int c, int angle);
 Coord avaliableNeighbour(int l, int c);
