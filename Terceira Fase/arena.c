@@ -176,6 +176,11 @@ void Sistema(Maquina *m, char code, int op, FILE *display){
         Coord tmp;
         Coord tmp2;
         case 'M':
+            if(m->count != 0)
+            {
+                printf("Robo %2d não pode se mover mais nessa rodada.", m->index-1);
+                break;
+            }
             tmp = getNeighbour(m->position[0], m->position[1], op);
             printf("MAQ index: %d\n", m->index);
             if(tmp.x == MAXMATRIZL || tmp.y == MAXMATRIZC){
