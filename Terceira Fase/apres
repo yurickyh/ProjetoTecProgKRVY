@@ -179,7 +179,7 @@ for line in fileinput.input():
         idRob, i, j = list(map(int, r[2:]))
         robs[idRob].draw(i,j)
         atu()
-        pg.time.wait(1000)
+        pg.time.wait(100)
         continue
 
     if r[0] == 'cel':
@@ -187,7 +187,7 @@ for line in fileinput.input():
         arena[ci][cj].cor = (cr, cg, cb)
         arena[ci][cj].draw()
         atu()
-        pg.time.wait(400)
+        pg.time.wait(100)
         continue
 
     if r[0] == 'base':
@@ -196,12 +196,15 @@ for line in fileinput.input():
         arena[i][j].draw()
         bass[idBase - 1].draw(i,j)
         atu();
+        pg.time.wait(100)
         continue
 
     if r[0] == 'cristal':
         i, j, qtd_cristal = list(map(int, r[1:]))
+        arena[i][j].draw()
         Cristal(qtd_cristal).draw(i,j);
         atu();
+        pg.time.wait(100)
         continue
 
     # linha de movimentação:
@@ -215,11 +218,10 @@ for line in fileinput.input():
     if 0 <= di  < W and 0 <= dj < H and ri < len(robs):
         robs[ri].draw(di,dj)
     # tempo de espera para atualização, apenas para testes
-    pg.time.wait(1000)
-
     
-
+    
     atu()
+    pg.time.wait(1000)
 
 pg.quit()
 # Local variables:
