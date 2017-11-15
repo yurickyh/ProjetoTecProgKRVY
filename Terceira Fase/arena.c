@@ -20,7 +20,7 @@ void CriaArena(){
     a->exercTopo = 0;
 }
 
-void Atualiza(int rodadas){
+void Atualiza(int rodadas, FILE *display){
     int i;
     for(i=0;i<rodadas;i++){
         int u;
@@ -40,12 +40,12 @@ void Atualiza(int rodadas){
             exit(0);
         }
         int j;
-        for(j=0;j<MAXMAQ;j++){
+        for(j=0;j<=MAXMAQ;j++){
             if(a->robos[j]!=NULL && a->robos[j]->vida <= 0){//Checar se o robo ficou sem vida
                 destroi_maquina(&a->robos[j]);
             }
             if(a->robos[j]!=NULL){
-                exec_maquina(a->robos[j], INSTRNUMBER);
+                exec_maquina(a->robos[j], INSTRNUMBER, display);
             }
             int y;
             for(y=0;y<MAXEXERC;y++){
@@ -146,21 +146,28 @@ void acertaMatriz(){
     }
 }
 
-void Sistema(Maquina *m, char code, int op){
+void Sistema(Maquina *m, char code, int op, FILE *display){
+    //Agora recebendo display para escrever a cada chamada de sistema
     //op = angulo da direcao
     switch (code) {
         Coord tmp;
         Coord tmp2;
         case 'M':
             tmp = getNeighbour(m->position[0], m->position[1], op);
+            printf("MAQ index: %d\n", m->index);
             if(tmp.x == MAXMATRIZL || tmp.y == MAXMATRIZC){
-                printf("Tentativa de movimento para célula inválida.\n");
+                printf("Tentativa de movimento para célula inválida. %d\n", m->index);
                 return;
             }
             if(a->matriz[tmp.x][tmp.y].ocup != 0){
-                printf("Tentativa de movimento para célula ocupada.\n");
+                printf("Tentativa de movimento para célula ocupada. %d\n", m->index);
                 return;
             }
+            fprintf(display, "%d %d %d %d %d\n", m->index-1, m->position[0], m->position[1], tmp.x, tmp.y);
+            fflush(display);
+            fprintf(display, "cristal %d %d %d\n", m->position[0], m->position[1], a->matriz[m->position[0]][m->position[1]].cristal);
+            fflush(display);
+            printf("Andou de [%1d][%1d] para [%1d][%1d].\n", m->position[0], m->position[1], tmp.x, tmp.y);
             tmp2.x = m->position[0];
             tmp2.y = m->position[1];
             m->position[0] = tmp.x;
@@ -168,30 +175,34 @@ void Sistema(Maquina *m, char code, int op){
             if(a->matriz[tmp2.x][tmp2.y].ocup != MAXMAQ+1){
                 a->matriz[tmp2.x][tmp2.y].ocup = 0;
             }
-            a->matriz[tmp.x][tmp.y].ocup = m->index;
-            printf("Andou para [%1d][%1d].\n", tmp.x, tmp.y);
+            a->matriz[tmp.x][tmp.y].ocup = m->index;            
             break;
         case 'D':
             tmp = getNeighbour(m->position[0], m->position[1], op);
             if(tmp.x == MAXMATRIZL || tmp.y == MAXMATRIZC){
-                printf("Tentativa de depósito em célula inválida.\n");
-                return;
+                printf("Tentativa de deposito em celula invalida.\n");
+                break;
             }
             if(a->matriz[tmp.x][tmp.y].ocup != MAXMAQ+1 && a->matriz[tmp.x][tmp.y].ocup != 0){
-                printf("Tentativa de depósito em célula ocupada por outro robô.\n");
-                return;
+                printf("Tentativa de deposito em celula ocupada por outro robo.\n");
+                break;
+            }
+            if(m->cristal == 0){
+                printf("O robo %d nao tem cristais\n", m->index);
+                break;
             }
             if(a->matriz[tmp.x][tmp.y].ocup == MAXMAQ+1){
                 a->exerc[a->baseCount[a->matriz[tmp.x][tmp.y].baseColour]-1]->base->vida -= m->cristal;
                 m->cristal = 0;  
                 printf("Depositou na base %2d.\n", a->matriz[tmp.x][tmp.y].baseColour);
-                return;     
+                break;     
             }
-            if(a->matriz[tmp.x][tmp.y].ocup == 0){
-                a->matriz[tmp.x][tmp.y].cristal += m->cristal;
-                m->cristal = 0;
-                printf("Depositou na célula [%1d][%1d].\n", tmp.x, tmp.y);
-                return;
+            if(a->matriz[tmp.x][tmp.y].ocup == 0){              
+                a->matriz[tmp.x][tmp.y].cristal += m->cristal;                
+                printf("Depositou na celula [%1d][%1d].\n", tmp.x, tmp.y);
+                fprintf(display, "cristal %d %d %d\n", tmp.x, tmp.y, a->matriz[tmp.x][tmp.y].cristal);
+                fflush(display);
+                break;
             }
             break;
         case 'R':
