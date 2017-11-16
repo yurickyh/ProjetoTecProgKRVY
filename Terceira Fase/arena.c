@@ -163,13 +163,12 @@ void acertaMatriz(){
     }
 }
 
-char *TER[] = {
+void Sistema(Maquina *m, char code, int op, FILE *display){
+    char *TER[] = {
         "road",
         "mountain",
         "river"
     };
-
-void Sistema(Maquina *m, char code, int op, FILE *display){
     //Agora recebendo display para escrever a cada chamada de sistema
     //op = angulo da direcao
     switch (code) {
@@ -178,7 +177,7 @@ void Sistema(Maquina *m, char code, int op, FILE *display){
         case 'M':
             if(m->count != 0)
             {
-                printf("Robo %2d não pode se mover mais nessa rodada.", m->index-1);
+                printf("Robo %2d não pode se mover mais nessa rodada.", m->index);
                 break;
             }
             tmp = getNeighbour(m->position[0], m->position[1], op);
@@ -215,9 +214,7 @@ void Sistema(Maquina *m, char code, int op, FILE *display){
             if(strcmp(currentTerr, riv) == 0){
                 m->count = 2;
             }            
-            if(a->matriz[tmp2.x][tmp2.y].ocup != MAXMAQ+1){
-                a->matriz[tmp2.x][tmp2.y].ocup = 0;
-            }
+            a->matriz[tmp2.x][tmp2.y].ocup = 0;            
             a->matriz[tmp.x][tmp.y].ocup = m->index;            
             break;
         case 'D':
