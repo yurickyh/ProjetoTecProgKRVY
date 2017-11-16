@@ -1,5 +1,5 @@
 public class Map{
-	/*public static String generate(){
+	public static String generate(){
 		String[] ter = {"road", "mountain", "river"};
 		String terreno = ter[(int)(Math.random()*3)];
 		double sorteio = Math.random();
@@ -48,29 +48,5 @@ public class Map{
 		System.out.print("{road, 0, 1, 0}}");
 		System.out.println("");
 		System.out.print("}");
-	}*/
-
-	public static String generate(){
-		String[] ter = {"road", "mountain", "river"};
-		String terreno = ter[(int)(Math.random()*3)];
-		double sorteio = Math.random();
-		int cristal = 0;
-		if(sorteio < 0.7) cristal = 0;
-		else if (sorteio < 0.95) cristal = 1;
-		else cristal = 2;
-		int ocupado = 0;
-		String celula = terreno + " " + cristal + " " + ocupado + " 0 ";
-		return celula;
-	}
-
-	public static void main(String[] args){	
-		int row = 4;
-		int col = 8;
-
-		for (int i = 0; i < row; i++){
-			for (int j = 0; j < col; j++){
-				System.out.print(generate());
-			}
-		}
 	}
 }
