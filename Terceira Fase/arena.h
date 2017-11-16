@@ -3,7 +3,7 @@
 #define MAXMAQ 4
 #define MAXEXERC 2
 #define ROBOSONEXERC 2
-#define MAXMATRIZL 4
+#define MAXMATRIZL 8
 #define MAXMATRIZC 8
 #define BASELIFE 20
 #define INSTRNUMBER 2
@@ -13,21 +13,20 @@ typedef enum{
     road,
     mountain,
     river
-    //Adicionar mais depois
 } Terreno;
 
-//Colour = 0 -> não é base
-//Colour = outro numero -> é base
+//Colour = 0 -> não é base.
+//Colour = outro número -> é base.
 typedef struct{
     int vida;
-    int colour; //Identificação da base 
+    int colour; //Identificação da base.
     int position[2];
 } Base;
 
 typedef struct{
     Terreno terrain;
     int cristal;
-    int ocup; //0 = desocupada; 1 ate MAXMAQ = indice do robo no vetor de endereços de maquina da arena; MAXMAQ+1 = base;
+    int ocup; //0 = desocupada; 1 ate MAXMAQ = índice do robo no vetor de endereços de máquinas da arena; MAXMAQ+1 = base;
     int baseColour;
 } Celula;
 
