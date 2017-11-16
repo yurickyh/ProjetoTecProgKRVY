@@ -6,7 +6,7 @@
 #define MAXMATRIZL 4
 #define MAXMATRIZC 8
 #define BASELIFE 20
-#define INSTRNUMBER 50
+#define INSTRNUMBER 2
 //Ao mudar o valor de MAXMAQ ou MAXEXERC ou ROBOSONEXERC, e preciso acertar os valores dos outros de modo que MAXMAQ=MAXEXERC*ROBOSONEXERC
 
 typedef enum{
