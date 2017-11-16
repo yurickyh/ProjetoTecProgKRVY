@@ -31,7 +31,9 @@ def convert(i ,j):
     Converte a coordenada (i,j) para a posição em pixels na janela
     """
     x = (1 + i%2)*l + 2*j*l
+    print("Coordenada i: %d" %(x))
     y = 1.5*i*L + L
+    print("Coordenada j: %d" %(y))
     return x,y
 
 class Robô(pg.sprite.Sprite):
@@ -178,7 +180,7 @@ bass = []
 atu()
 
 # Leitura dos comandos pela entrada padrão ou de um arquivo
-for line in fileinput.input():
+for line in fileinput.input():    
     r = line.split()
 
     # linha começando com 'fim', termina o programa
@@ -189,11 +191,12 @@ for line in fileinput.input():
     # o segundo argumento na linha é a imagem   
     if r[0] == 'rob':    
     #Criar e posicionar o robo no mapa    
+        #print("Criacao do robo %s" %(r[2]))
         robs.append(Robô(r[1], r[2]))
         idRob, i, j = list(map(int, r[2:]))
         robs[idRob].draw(i,j,3)
         atu()
-        pg.time.wait(500)
+        pg.time.wait(100)
         continue
 
     if r[0] == 'cel':
@@ -202,23 +205,24 @@ for line in fileinput.input():
         arena[ci][cj].cor = (cr, cg, cb)
         arena[ci][cj].draw()
         atu()
-        pg.time.wait(100)
+        #pg.time.wait(100)
         continue
 
     if r[0] == 'base':
     #Comando para printar uma base no mapa
-        bass.append(Base(r[1]))
+        bass.append(Base(r[1]))        
         idBase, i, j = list(map(int, r[2:]))
+        #print("Criacao da base %d" %(idBase))
         arena[i][j].draw()
         bass[idBase - 1].draw(i,j)
         atu();
-        pg.time.wait(100)
+        #pg.time.wait(100)
         continue
 
     if r[0] == 'cristal':
     #Comando para printar um cristal no mapa
         i, j, qtd_cristal = list(map(int, r[1:]))
-        arena[i][j].draw()
+        #print("Criacao de %d cristal em [%d][%d]" %(qtd_cristal, i, j))
         Cristal(qtd_cristal).draw(i,j);
         atu();
         pg.time.wait(100)
@@ -229,17 +233,19 @@ for line in fileinput.input():
         i, j = list(map(int, r[1:]))
         arena[i][j].draw()
         atu()
+        #pg.time.wait(1000)
         continue
 
     # linha de movimentação:
     # robô, corrdenadas originais, coordenadas finais
     ri, oi, oj, di, dj, vida = list(map(int, r))
-    
+    #print("Movendo o robo %d da posicao [%d][%d] para [%d][%d]" %(ri, oi, oj, di, dj))
+    #CORRIGINDO DOIS ERROS DO PROF. NA CONDICAO DE MOVIMENTO
     # redesenha a célula original (apaga o robô)
-    if 0 <= oi  < W and 0 <= oj < H:
+    if 0 <= oi  < H and 0 <= oj < W:
         arena[oi][oj].draw()
-    # desenha o robô na célula de destino
-    if 0 <= di  < W and 0 <= dj < H and ri < len(robs):
+    # desenha o robô na célula de destino    
+    if 0 <= di  < H and 0 <= dj < W and ri < len(robs):
         robs[ri].draw(di,dj, vida)
     # tempo de espera para atualização, apenas para testes
     
