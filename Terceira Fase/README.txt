@@ -22,4 +22,9 @@ TODOS OS CÓDIGOS FORAM TESTADOS EM LINUX UBUNTU 16.04 LTS E EM LINUX MINT 18.2
 
 *** MOTOR.C E TESTES
     
-    
+    No "motor.c" estão definidos os tipos de terreno, cores utilizadas por cada um deles e uma matriz (arena) para testes.
+    A arena é inserida na representação gráfica por comandos "fprintf". Logo após são inseridos dois exércitos, executados os comandos de cada máquina, o segundo exército é removido (de forma forçada) e o jogo termina.
+    O conjunto de instruções está no array de INSTR "programa", definido no início do código. Vale lembrar que todos os robôs executaram o mesmo conjunto de instruções em nosso teste.
+        - Teste 1: testa movimentação em diferentes terrenos;
+        - Teste 2: testa ataque e vida dos robôs;
+        - Teste 3: testa coleta e deposição de cristais; perda de vida da base.

@@ -13,12 +13,12 @@ INSTR programa[] = {
     {ATAQ, {ACAO, 180}}*/
     
     //Teste 2
-    /*{RECO, {ACAO, 315}},
+    {RECO, {ACAO, 315}},
     {ATAQ, {ACAO, 225}},
     {ATAQ, {ACAO, 225}},
     {ATAQ, {ACAO, 225}},
     {RECO, {ACAO, 225}},
-    {DEPO, {ACAO,   0}}*/
+    {DEPO, {ACAO,   0}}
     
     //Teste 3
     /*{RECO, {ACAO, 315}},

@@ -91,10 +91,10 @@ Exercito *InsereExercito(int x, int y, INSTR *p, FILE *display){//x e y = coorde
     e->base->position[0] = x;
     e->base->position[1] = y;
     if(a->matriz[x][y].baseColour == 1){//Desenhar a base 1 na interface gráfica.
-        fprintf(display, "base base1r.png %d %d %d\n", a->matriz[x][y].baseColour, x, y); //criar a base vermelha        
+        fprintf(display, "base sprites/base1r.png %d %d %d\n", a->matriz[x][y].baseColour, x, y); //criar a base vermelha        
     }
     if(a->matriz[x][y].baseColour == 2){//Desenhar a base 2 na interface gráfica.
-        fprintf(display, "base base2r.png %d %d %d\n", a->matriz[x][y].baseColour, x, y); //criar a base azul
+        fprintf(display, "base sprites/base2r.png %d %d %d\n", a->matriz[x][y].baseColour, x, y); //criar a base azul
     }
     fflush(display);  
     for(i=0;i<ROBOSONEXERC;i++){//Loop para criar todos os robos do exército.
@@ -108,11 +108,11 @@ Exercito *InsereExercito(int x, int y, INSTR *p, FILE *display){//x e y = coorde
             a->matriz[aux.x][aux.y].ocup = maq->index; 
         }
         if(a->matriz[x][y].baseColour == 1){//Desenha o robo do exército 1 na interface gráfica numa célula vizinha disponível.
-            fprintf(display, "rob robo1.png %d %d %d\n", maq->index-1, maq->position[0], maq->position[1]);            
+            fprintf(display, "rob sprites/robo1.png %d %d %d\n", maq->index-1, maq->position[0], maq->position[1]);            
             fflush(display); 
         }
         if(a->matriz[x][y].baseColour == 2){//Desenha o robo do exército 2 na interface gráfica numa célula vizinha disponível.
-            fprintf(display, "rob robo2.png %d %d %d\n", maq->index-1, maq->position[0], maq->position[1]);
+            fprintf(display, "rob sprites/robo2.png %d %d %d\n", maq->index-1, maq->position[0], maq->position[1]);
             fflush(display); 
         }
         e->robots[i] = maq;//Adiciona o robo no vetor de robos do seu exército.

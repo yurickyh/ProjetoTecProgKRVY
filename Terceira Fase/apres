@@ -80,7 +80,7 @@ class Base(pg.sprite.Sprite):
     """
     Representa uma base, possui uma imagem
     """
-    def __init__(s, img, vida):
+    def __init__(s, img, vida, i, j):
         """
         Construtor, img é o nome do arquivo com a imagem
         """
@@ -88,15 +88,20 @@ class Base(pg.sprite.Sprite):
         s.image = pg.image.load(img)
         s.rect = s.image.get_rect()
         s.vida = vida
+        s.i = i
+        s.j = j
 
-    def diminui_vida(qtd):
-        s.vida -= qtd
+    def get_position(s):
+        return [s.i, s.j]
 
-    def draw(s,i,j):
+    def atualiza_vida(s, atual):
+        s.vida = atual
+
+    def draw(s):
         """
         Desenha o robô na célula (i,j)
         """
-        x, y = convert(i,j)
+        x, y = convert(s.i,s.j)
 
         # fronteiras do sprite
         l0,h0,l1,h1 = s.rect
@@ -121,7 +126,7 @@ class Cristal(pg.sprite.Sprite):
         Construtor, img é o nome do arquivo com a imagem
         """
         pg.sprite.Sprite.__init__(s)
-        s.image = pg.image.load("cristal.png")
+        s.image = pg.image.load("sprites/cristal.png")
         s.rect = s.image.get_rect()
         s.num = num
 
@@ -223,25 +228,32 @@ for line in fileinput.input():
 
     if r[0] == 'base':
     #Comando para printar uma base no mapa
-        bass.append(Base(r[1], MAXVIDABASE))        
         idBase, i, j = list(map(int, r[2:]))
+        bass.append(Base(r[1], MAXVIDABASE, i, j))        
+        
         #print("Criacao da base %d" %(idBase))
         arena[i][j].draw()
-        bass[idBase - 1].draw(i,j)
+        bass[idBase - 1].draw()
         atu();
         #pg.time.wait(100)
         continue
 
     if r[0] == 'att_base':
-        idBase, vidaPerdida = list(map(int, r[1:]))
-        bass[idBase - 1].diminui_vida(vidaPerdida)
+        idBase, vidaAtual = list(map(int, r[1:]))
+        # apaga desenho da base atual
+        coord = bass[idBase - 1].get_position()
+        arena[coord[0]][coord[1]].draw()
+        # atualiza vida da base e desenha novamente
+        bass[idBase - 1].atualiza_vida(vidaAtual)
+        bass[idBase - 1].draw()
         continue
 
     if r[0] == 'cristal':
     #Comando para printar um cristal no mapa
         i, j, qtd_cristal = list(map(int, r[1:]))
         #print("Criacao de %d cristal em [%d][%d]" %(qtd_cristal, i, j))
-        Cristal(qtd_cristal).draw(i,j);
+        if(qtd_cristal != 0):
+            Cristal(qtd_cristal).draw(i,j);
         atu();
         pg.time.wait(100)
         continue
