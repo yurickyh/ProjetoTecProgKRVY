@@ -42,7 +42,7 @@ void Atualiza(int rodadas, FILE *display){
         int j;
         for(j=0;j<MAXMAQ;j++){
             if(a->robos[j+1]!=NULL && a->robos[j+1]->vida <= 0){//Checar se o robo ficou sem vida
-                //remover os robos na interface               
+                //remover os robos na interface            
                 fprintf(display, "clean %d %d\n", a->robos[j+1]->position[0], a->robos[j+1]->position[1]);
                 fflush(display);
                 destroi_maquina(&a->robos[j+1]);
@@ -131,7 +131,7 @@ void destroiBase(Base** b){
 void RemoveExercito(Exercito *e, Exercito** ex, FILE *display){
     int i = e->base->colour;      
     int j;
-    a->matriz[e->base->position[0]][e->base->position[1]].ocup = 0;
+    a->matriz[e->base->position[0]][e->base->position[1]].ocup = 0;    
     for(j=(ROBOSONEXERC*(i-1));j<(i*ROBOSONEXERC);j++){
         //parte para remover os robos do mapa
         fprintf(display, "clean %d %d\n", a->robos[j+1]->position[0], a->robos[j+1]->position[1]);
@@ -140,6 +140,7 @@ void RemoveExercito(Exercito *e, Exercito** ex, FILE *display){
     }
     a->baseCount[i] = 0;
     acertaMatriz();
+    printf("Chegou AQUIIIIIIIIIIIIIIIIIIIIIIIIIIII\n");
     fprintf(display, "clean %d %d\n", e->base->position[0], e->base->position[1]);
     fflush(display);
     destroiBase(&e->base);
@@ -175,26 +176,27 @@ void Sistema(Maquina *m, char code, int op, FILE *display){
         Coord tmp;
         Coord tmp2;
         case 'M':
-            if(m->count != 0)
-            {
-                printf("Robo %2d não pode se mover mais nessa rodada.", m->index);
-                break;
+            if(m->count != 0){
+                printf("Robo %2d não pode se mover mais nessa rodada.\n", m->index-1);
+                return;
             }
             tmp = getNeighbour(m->position[0], m->position[1], op);
             printf("MAQ index: %d\n", m->index);
             if(tmp.x == MAXMATRIZL || tmp.y == MAXMATRIZC){
                 printf("Tentativa de movimento para célula inválida. %d\n", m->index);
-                break;
+                return;
             }
             if(a->matriz[tmp.x][tmp.y].ocup != 0){
                 printf("Tentativa de movimento para célula ocupada. %d\n", m->index);
-                break;
+                return;
             }
             fprintf(display, "%d %d %d %d %d %d\n", m->index-1, m->position[0], m->position[1], tmp.x, tmp.y, m->vida);
             fflush(display);
-            fprintf(display, "cristal %d %d %d\n", m->position[0], m->position[1], a->matriz[m->position[0]][m->position[1]].cristal);
-            fflush(display);
-            printf("Andou de [%1d][%1d] para [%1d][%1d].\n", m->position[0], m->position[1], tmp.x, tmp.y);
+            if(a->matriz[m->position[0]][m->position[1]].cristal > 0){
+                fprintf(display, "cristal %d %d %d\n", m->position[0], m->position[1], a->matriz[m->position[0]][m->position[1]].cristal);
+                fflush(display);
+            }   
+            printf("Robo %d andou de [%1d][%1d] para [%1d][%1d].\n", m->index, m->position[0], m->position[1], tmp.x, tmp.y);
             tmp2.x = m->position[0];
             tmp2.y = m->position[1];
             m->position[0] = tmp.x;
@@ -214,7 +216,9 @@ void Sistema(Maquina *m, char code, int op, FILE *display){
             if(strcmp(currentTerr, riv) == 0){
                 m->count = 2;
             }            
-            a->matriz[tmp2.x][tmp2.y].ocup = 0;            
+            if(a->matriz[tmp2.x][tmp2.y].ocup != MAXMAQ+1){                
+                a->matriz[tmp2.x][tmp2.y].ocup = 0;
+            }
             a->matriz[tmp.x][tmp.y].ocup = m->index;            
             break;
         case 'D':
