@@ -26,6 +26,8 @@ void Atualiza(int rodadas, FILE *display){
         int u;
         int count = 0;
         int aux;
+        int auxPosition1;
+        int auxPosition2;
         for(u=1;u<MAXEXERC+1;u++){//Checar se há apenas uma base ativa, isto é, checar se alguem ganhou
             if(a->baseCount[u] != 0){
                 count++;
@@ -42,9 +44,16 @@ void Atualiza(int rodadas, FILE *display){
         int j;
         for(j=0;j<MAXMAQ;j++){
             if(a->robos[j+1]!=NULL && a->robos[j+1]->vida <= 0){//Checar se o robo ficou sem vida
+                auxPosition1 = a->robos[j+1]->position[0];
+                auxPosition2 = a->robos[j+1]->position[1];
                 //remover os robos na interface            
-                fprintf(display, "clean %d %d\n", a->robos[j+1]->position[0], a->robos[j+1]->position[1]);
+                fprintf(display, "clean %d %d\n", auxPosition1, auxPosition2);
                 fflush(display);
+                if((a->matriz[auxPosition1][auxPosition2].cristal + a->robos[j+1]->cristal) > 0){
+                    fprintf(display, "cristal %d %d %d\n", auxPosition1, auxPosition2, 
+                        a->matriz[auxPosition1][auxPosition2].cristal + a->robos[j+1]->cristal);
+                    fflush(display);
+                }
                 destroi_maquina(&a->robos[j+1]);
             }
             if(a->robos[j+1]!=NULL){
@@ -131,18 +140,28 @@ void destroiBase(Base** b){
 void RemoveExercito(Exercito *e, Exercito** ex, FILE *display){
     int i = e->base->colour;      
     int j;
+    int aux1;
+    int aux2;
     a->matriz[e->base->position[0]][e->base->position[1]].ocup = 0;    
     for(j=(ROBOSONEXERC*(i-1));j<(i*ROBOSONEXERC);j++){
-        //parte para remover os robos do mapa
-        fprintf(display, "clean %d %d\n", a->robos[j+1]->position[0], a->robos[j+1]->position[1]);
+        //parte para remover os robos do mapa    
+        aux1 = a->robos[j+1]->position[0];
+        aux2 = a->robos[j+1]->position[1];
+        fprintf(display, "clean %d %d\n", aux1, aux2);
         fflush(display);
+        //para colocar os cristais de volta
+        //do modo como foi feito, os cristais carregados pelo robo sao depositados na celula
+        //ao qual ele foi destruido
+        if((a->matriz[aux1][aux2].cristal + a->robos[j+1]->cristal) > 0){
+            fprintf(display, "cristal %d %d %d\n", aux1, aux2, a->matriz[aux1][aux2].cristal + a->robos[j+1]->cristal);
+            fflush(display);
+        }
         destroi_maquina(&a->robos[j+1]);
     }
     a->baseCount[i] = 0;
     acertaMatriz();
-    printf("Chegou AQUIIIIIIIIIIIIIIIIIIIIIIIIIIII\n");
     fprintf(display, "clean %d %d\n", e->base->position[0], e->base->position[1]);
-    fflush(display);
+    fflush(display);    
     destroiBase(&e->base);
     free(*ex);
     *ex = NULL;
@@ -173,6 +192,8 @@ void Sistema(Maquina *m, char code, int op, FILE *display){
     //Agora recebendo display para escrever a cada chamada de sistema
     //op = angulo da direcao
     switch (code) {
+        int aux1;
+        int aux2;
         Coord tmp;
         Coord tmp2;
         case 'M':
@@ -279,9 +300,15 @@ void Sistema(Maquina *m, char code, int op, FILE *display){
                 printf("Tentativa de ataque em uma base. Não é possível atacar uma base diretamente.\n");
                 break;
             }
-            a->robos[a->matriz[tmp.x][tmp.y].ocup]->vida = a->robos[a->matriz[tmp.x][tmp.y].ocup]->vida - 1;
-            fprintf(display, "%d %d %d %d %d %d\n", m->index-1, m->position[0], m->position[1], m->position[0], m->position[1], m->vida);
+            a->robos[a->matriz[tmp.x][tmp.y].ocup]->vida = a->robos[a->matriz[tmp.x][tmp.y].ocup]->vida - 1;     
+            aux1 = a->robos[a->matriz[tmp.x][tmp.y].ocup]->position[0];
+            aux2 = a->robos[a->matriz[tmp.x][tmp.y].ocup]->position[1];
+            fprintf(display, "%d %d %d %d %d %d\n", a->matriz[tmp.x][tmp.y].ocup-1, aux1, aux2, aux1, aux2, a->robos[a->matriz[tmp.x][tmp.y].ocup]->vida);
             fflush(display);
+            if(a->matriz[m->position[0]][m->position[1]].cristal > 0){
+                fprintf(display, "cristal %d %d %d\n", aux1, aux2, a->matriz[aux1][aux2].cristal);
+                fflush(display);
+            }
             printf("Efetuou o ataque na célula [%1d][%1d] atingindo o robô %3d.\n", tmp.x, tmp.y, a->matriz[tmp.x][tmp.y].ocup);
             break;
     }
