@@ -9,7 +9,7 @@ pg.font.init() # inicia fontes
 myfont = pg.font.SysFont('Comic Sans MS', 20)
 
 # altura e largura da arena, em células
-H, W = 4,8
+H, W = 8, 8
 
 # largura da célula
 l = 30
@@ -67,7 +67,7 @@ class Robô(pg.sprite.Sprite):
         scr.blit(text_id, s.rect)
 
         # coloca vida do robo
-        text_vida = myfont.render(str(vida), False, (0, 0, 0))
+        text_vida = myfont.render(str(vida), False, (75, 255, 138))
         s.rect.topleft = [x+l1/3,y-h1/2]
         scr.blit(text_vida, s.rect)
 
