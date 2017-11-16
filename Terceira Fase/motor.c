@@ -31,18 +31,18 @@ INSTR programa[] = {
     {RET,  {NUM,  0}}  //20*/
      
     //Descomentar para o teste 7
-    {MOVE, {ACAO, 0}},
-    {MOVE, {ACAO, 0}},
-    {MOVE, {ACAO, 0}},
-    {MOVE, {ACAO, 0}},
-    {MOVE, {ACAO, 0}},
-    {MOVE, {ACAO, 0}},
-    {END,  {NUM,  0}}
+    /*{MOVE, {ACAO, 315}},
+    {MOVE, {ACAO, 270}},
+    {MOVE, {ACAO,  45}}*/
 
     //Descomentar para o teste 8
     /*{RECO, {ACAO, 315}},
     {MOVE, {ACAO, 270}},
     {RECO, {ACAO, 270}}*/
+
+    {MOVE, {ACAO, 180}},
+    {MOVE, {ACAO, 180}},
+    {MOVE, {ACAO, 180}}
 
     //Descomentar para o teste 9
     /*{RECO, {ACAO, 315}},
@@ -99,8 +99,8 @@ int main(int ac, char **av) {
     a->exerc[a->exercTopo++] = InsereExercito(0, 0, programa, display);
     a->exerc[a->exercTopo++] = InsereExercito(3, 7, programa, display);
     Atualiza(6, display);
-    RemoveExercito(a->exerc[0], &a->exerc[0], display);
-    RemoveExercito(a->exerc[1], &a->exerc[1], display);
+    //RemoveExercito(a->exerc[0], &a->exerc[0], display);
+    //RemoveExercito(a->exerc[1], &a->exerc[1], display);
     pclose(display);
     return 0;
 }
