@@ -4,8 +4,8 @@ public class Map{
 		String terreno = ter[(int)(Math.random()*3)];
 		double sorteio = Math.random();
 		int cristal = 0;
-		if(sorteio < 0.7) cristal = 0;
-		else if (sorteio < 0.95) cristal = 1;
+		if(sorteio < 0.5) cristal = 0;
+		else if (sorteio < 0.8) cristal = 1;
 		else cristal = 2;
 		int ocupado = 0;
 		String celula = "{" + terreno + ", " + cristal + ", " + ocupado + ", 0}";
