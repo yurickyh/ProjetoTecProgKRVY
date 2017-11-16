@@ -1,69 +1,33 @@
 #include <stdio.h>
 #include "arena.h"
 #include <string.h>
-#define linhas 4
-#define colunas 8
 
 FILE *display;
 INSTR programa[] = {
-    //FATORIAL. Para numeros muito grandes é preciso aumentar o valor da variavel INSTRNUMBER ou aumentar o numero do argumento passado na funcao Atualiza():
-    //Descomentar para o teste 6.
-    /*{PUSH, {NUM,  6}}, //0
-    {CALL, {NUM,  4}}, //1
-    {PRN,  {NUM,  0}}, //2
-    {END,  {NUM,  0}}, //3
-    {ALC,  {NUM,  1}}, //4
-    {DUP,  {NUM,  0}}, //5
-    {STL,  {NUM,  1}}, //6
-    {PUSH, {NUM,  1}}, //7 
-    {EQ,   {NUM,  0}}, //8
-    {JIF,  {NUM, 13}}, //9
-    {PUSH, {NUM,  1}}, //10
-    {FRE,  {NUM,  1}}, //11
-    {RET,  {NUM,  0}}, //12
-    {RCE,  {NUM,  1}}, //13
-    {PUSH, {NUM,  1}}, //14
-    {SUB,  {NUM,  0}}, //15
-    {CALL, {NUM,  4}}, //16
-    {RCE,  {NUM,  1}}, //17
-    {MUL,  {NUM,  0}}, //18
-    {FRE,  {NUM,  1}}, //19
-    {RET,  {NUM,  0}}  //20*/
-     
-    //Descomentar para o teste 7
-    /*{MOVE, {ACAO, 315}},
-    {MOVE, {ACAO, 270}},
-    {MOVE, {ACAO,  45}}*/
-
-    //Descomentar para o teste 8
+    //Teste 1
+    /*{MOVE, {ACAO,   0}},
+    {MOVE, {ACAO, 135}},
+    {ATAQ, {ACAO,   0}},
+    {RECO, {ACAO, 225}},
+    {DEPO, {ACAO, 315}},
+    {ATAQ, {ACAO, 180}}*/
+    
+    //Teste 2
     /*{RECO, {ACAO, 315}},
-    {MOVE, {ACAO, 270}},
-    {RECO, {ACAO, 270}}*/
-
     {ATAQ, {ACAO, 225}},
-    {RECO, {ACAO, 180}},
     {ATAQ, {ACAO, 225}},
-    {ATAQ, {ACAO, 225}}
-
-    //Descomentar para o teste 9
+    {ATAQ, {ACAO, 225}},
+    {RECO, {ACAO, 225}},
+    {DEPO, {ACAO,   0}}*/
+    
+    //Teste 3
     /*{RECO, {ACAO, 315}},
-    {MOVE, {ACAO, 270}},
-    {DEPO, {ACAO,  45}}*/
-
-    //Descomentar para o teste 10
-    /*{MOVE, {ACAO, 315}},
-    {MOVE, {ACAO, 270}},
-    {ATAQ, {ACAO, 270}}*/
-
-    //Descomentar para o teste 11
-    /*{PUSH, {CEL, 1,{river, 2, 10, 6}}},
-    {ATR, {NUM, 0}},
-    {PRN, {NUM, 0}},
-    {END,  {NUM,  0}}*/
+    {RECO, {ACAO,   0}},
+    {DEPO, {ACAO, 180}}*/  
 };
 
 int main(int ac, char **av) {
-
+    //Descomentar os testes no vetor programa, um por execução.
     int lin = 0, col = 0, color = 0;
     char *TER[] = {
         "road",
@@ -77,17 +41,22 @@ int main(int ac, char **av) {
     };
     CriaArena();
     Celula c[MAXMATRIZL][MAXMATRIZC] = {
-        {{road, 0, 0, 1}, {road, 2, 0, 0}, {road, 2, 0, 0}, {road, 0, 0, 0}, {river, 3, 0, 0}, {mountain, 4, 0, 0}, {road, 2, 0, 0}, {road, 2, 0, 0}}, 
-        {{river, 4, 0, 0}, {river, 3, 0, 0}, {mountain, 2, 0, 0}, {road, 2, 0, 0}, {road, 1, 0, 0}, {road, 1, 0, 0}, {river, 0, 0, 0}, {river, 1, 0, 0}},
-        {{river, 2, 0, 0}, {river, 2, 0, 0}, {river, 2, 0, 0}, {road, 2, 0, 0}, {road, 2, 0, 0}, {road, 2, 0, 0}, {mountain, 2, 0, 0}, {mountain, 3, 0, 0}},
-        {{river, 2, 0, 0}, {river, 1, 0, 0}, {road, 2, 0, 0}, {road, 1, 0, 0}, {road, 2, 0, 0}, {road, 2, 0, 0}, {road, 2, 0, 0}, {road, 2, 0, 2}}
+        {{road, 0, 1, 0}, {road, 2, 0, 0}, {mountain, 0, 0, 0}, {road, 0, 0, 0}, {road, 0, 0, 0}, {river, 1, 0, 0}, {mountain, 2, 0, 0}, {road, 1, 0, 0}},
+        {{mountain, 0, 0, 0}, {mountain, 1, 0, 0}, {road, 3, 0, 0}, {mountain, 1, 0, 0}, {river, 0, 0, 0}, {mountain, 1, 0, 0}, {river, 1, 0, 0}, {mountain, 0, 0, 0}},
+        {{road, 0, 0, 0}, {mountain, 2, 0, 0}, {river, 1, 0, 0}, {river, 0, 0, 0}, {mountain, 3, 0, 0}, {road, 2, 0, 0}, {river, 0, 0, 0}, {river, 2, 0, 0}},
+        {{road, 2, 0, 0}, {road, 2, 0, 0}, {road, 1, 0, 0}, {mountain, 2, 0, 0}, {mountain, 1, 0, 0}, {mountain, 1, 0, 0}, {mountain, 0, 0, 0}, {river, 2, 0, 0}},
+        {{road, 2, 0, 0}, {river, 1, 0, 0}, {road, 2, 0, 0}, {road, 1, 0, 0}, {mountain, 3, 0, 0}, {road, 0, 0, 0}, {road, 2, 0, 0}, {river, 2, 0, 0}},
+        {{road, 1, 0, 0}, {mountain, 2, 0, 0}, {road, 1, 0, 0}, {road, 3, 0, 0}, {road, 1, 0, 0}, {mountain, 3, 0, 0}, {road, 0, 0, 0}, {river, 2, 0, 0}},
+        {{river, 0, 0, 0}, {road, 0, 0, 0}, {river, 3, 0, 0}, {mountain, 1, 0, 0}, {mountain, 2, 0, 0}, {road, 0, 0, 0}, {mountain, 2, 0, 0}, {road, 1, 0, 0}},
+        {{river, 1, 0, 0}, {road, 1, 0, 0}, {mountain, 0, 0, 0}, {road, 0, 0, 0}, {river, 0, 0, 0}, {river, 0, 0, 0}, {mountain, 0, 0, 0}, {road, 0, 1, 0}}
     };
     memcpy(a->matriz, c, sizeof(a->matriz));
-    display = popen("./apres", "w"); //criacao do pipe para apres
-    if (display == NULL) { //verificar se o display eh nulo
-        fprintf(stderr,"Não encontrei o programa de exibição\n");
+    display = popen("./apres", "w"); //Criação do pipe para o apres.
+    if (display == NULL) {//Verificar se o display é nulo.
+        fprintf(stderr, "Não encontrei o programa de exibição\n");
         return 1;
     }  
+    //Desenha as características da matriz na interface gráfica.
     for (lin = 0; lin < MAXMATRIZL; lin++){
         for (col = 0; col < MAXMATRIZC; col++){      
             fprintf(display, "cel %d %d %s\n", lin, col, Color[a->matriz[lin][col].terrain]);
@@ -97,11 +66,13 @@ int main(int ac, char **av) {
             fflush(display);   
         }
     }
+    //Adiciona os 2 exércitos.
     a->exerc[a->exercTopo++] = InsereExercito(0, 0, programa, display);
-    a->exerc[a->exercTopo++] = InsereExercito(3, 7, programa, display);
+    a->exerc[a->exercTopo++] = InsereExercito(7, 7, programa, display);
+    //Executa 2 instruções por rodada para 6 rodadas;
     Atualiza(6, display);
-    //RemoveExercito(a->exerc[0], &a->exerc[0], display);
-    //RemoveExercito(a->exerc[1], &a->exerc[1], display);
-    pclose(display);
+    RemoveExercito(a->exerc[1], &a->exerc[1], display);
+    Atualiza(1, display);
+    pclose(display);//Fecha o pipe.
     return 0;
 }
