@@ -11,6 +11,9 @@ myfont = pg.font.SysFont('Comic Sans MS', 20)
 # altura e largura da arena, em células
 H, W = 8, 8
 
+# constantes para o jogo
+MAXVIDAROBO, MAXVIDABASE = 3, 20
+
 # largura da célula
 l = 30
 # altura da célula
@@ -33,6 +36,7 @@ def convert(i ,j):
     x = (1 + i%2)*l + 2*j*l
     y = 1.5*i*L + L
     return x,y
+
 
 class Robô(pg.sprite.Sprite):
     """
@@ -74,17 +78,21 @@ class Robô(pg.sprite.Sprite):
 
 class Base(pg.sprite.Sprite):
     """
-    Representa um base, possui uma imagem
+    Representa uma base, possui uma imagem
     """
-    def __init__(s, img):
+    def __init__(s, img, vida):
         """
         Construtor, img é o nome do arquivo com a imagem
         """
         pg.sprite.Sprite.__init__(s)
         s.image = pg.image.load(img)
         s.rect = s.image.get_rect()
+        s.vida = vida
 
-    def draw(s, i,j):
+    def diminui_vida(qtd):
+        s.vida -= qtd
+
+    def draw(s,i,j):
         """
         Desenha o robô na célula (i,j)
         """
@@ -96,11 +104,17 @@ class Base(pg.sprite.Sprite):
         # corrije a posição de acordo com o tamanho do sprite
         s.rect.topleft = [x-l1/2,y-h1/2]
         # desenha
-        scr.blit(s.image, s.rect)     
+        scr.blit(s.image, s.rect)
+
+        # coloca vida da base
+        text_vida = myfont.render(str(s.vida), False, (94, 0, 0))
+        s.rect.topleft = [x+l1/3,y-h1/2]
+        scr.blit(text_vida, s.rect)
+
 
 class Cristal(pg.sprite.Sprite):
     """
-    Representa um base, possui uma imagem
+    Representa um cristal
     """
     def __init__(s, num):
         """
@@ -113,7 +127,7 @@ class Cristal(pg.sprite.Sprite):
 
     def draw(s,i,j):
         """
-        Desenha o robô na célula (i,j)
+        Desenha o cristal na célula (i,j)
         """
         x, y = convert(i,j)
 
@@ -128,6 +142,7 @@ class Cristal(pg.sprite.Sprite):
         textsurface = myfont.render(str(s.num), False, (255, 255, 255))
         s.rect.topleft = [x+l1,y+h1/1.4]
         scr.blit(textsurface, s.rect)
+
 
 class cell:
     """
@@ -192,7 +207,7 @@ for line in fileinput.input():
         #print("Criacao do robo %s" %(r[2]))
         robs.append(Robô(r[1], r[2]))
         idRob, i, j = list(map(int, r[2:]))
-        robs[idRob].draw(i,j,3)
+        robs[idRob].draw(i,j,MAXVIDAROBO)
         atu()
         pg.time.wait(100)
         continue
@@ -208,13 +223,18 @@ for line in fileinput.input():
 
     if r[0] == 'base':
     #Comando para printar uma base no mapa
-        bass.append(Base(r[1]))        
+        bass.append(Base(r[1], MAXVIDABASE))        
         idBase, i, j = list(map(int, r[2:]))
         #print("Criacao da base %d" %(idBase))
         arena[i][j].draw()
         bass[idBase - 1].draw(i,j)
         atu();
         #pg.time.wait(100)
+        continue
+
+    if r[0] == 'att_base':
+        idBase, vidaPerdida = list(map(int, r[1:]))
+        bass[idBase - 1].diminui_vida(vidaPerdida)
         continue
 
     if r[0] == 'cristal':

@@ -263,6 +263,8 @@ void Sistema(Maquina *m, char code, int op, FILE *display){
                 a->exerc[a->baseCount[a->matriz[tmp.x][tmp.y].baseColour]-1]->base->vida -= m->cristal;//Reduzir a vida da base que está na célula alvo.
                 m->cristal = 0;//Zerar os cristais carregados pelo robo.
                 printf("Depositou na base %2d.\n", a->matriz[tmp.x][tmp.y].baseColour);
+                fprintf(display, "att_base %d %d\n", a->matriz[tmp.x][tmp.y].baseColour, a->exerc[a->baseCount[a->matriz[tmp.x][tmp.y].baseColour]-1]->base->vida);//Manda comando para atualizar representação gráfica da base
+                fflush(display); 
                 break;     
             }
             if(a->matriz[tmp.x][tmp.y].ocup == 0){//Se a célula estiver desocupada.              
