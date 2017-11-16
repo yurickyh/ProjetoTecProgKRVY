@@ -31,9 +31,7 @@ def convert(i ,j):
     Converte a coordenada (i,j) para a posição em pixels na janela
     """
     x = (1 + i%2)*l + 2*j*l
-    print("Coordenada i: %d" %(x))
     y = 1.5*i*L + L
-    print("Coordenada j: %d" %(y))
     return x,y
 
 class Robô(pg.sprite.Sprite):
