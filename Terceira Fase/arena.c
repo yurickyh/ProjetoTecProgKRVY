@@ -54,7 +54,7 @@ void Atualiza(int rodadas, FILE *display){
                     //Adicionar os cristais do robo removido aos cristais presentes na célula em que ele estava.
                     a->matriz[auxPosition1][auxPosition2].cristal += a->robos[j+1]->cristal;
                     fprintf(display, "cristal %d %d %d\n", auxPosition1, auxPosition2, 
-                        a->matriz[auxPosition1][auxPosition2].cristal + a->robos[j+1]->cristal);
+                        a->matriz[auxPosition1][auxPosition2].cristal);
                     fflush(display);
                 }
                 destroi_maquina(&a->robos[j+1]);//Remover o robo que ficou sem vida.
