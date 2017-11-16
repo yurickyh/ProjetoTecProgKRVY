@@ -40,9 +40,10 @@ INSTR programa[] = {
     {MOVE, {ACAO, 270}},
     {RECO, {ACAO, 270}}*/
 
-    {MOVE, {ACAO, 180}},
-    {MOVE, {ACAO, 180}},
-    {MOVE, {ACAO, 180}}
+    {ATAQ, {ACAO, 225}},
+    {RECO, {ACAO, 180}},
+    {ATAQ, {ACAO, 225}},
+    {ATAQ, {ACAO, 225}}
 
     //Descomentar para o teste 9
     /*{RECO, {ACAO, 315}},
