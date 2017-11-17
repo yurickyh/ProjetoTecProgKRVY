@@ -43,7 +43,7 @@ void Atualiza(int rodadas, FILE *display){
         }
         int j;
         for(j=0;j<MAXMAQ;j++){//Loop para passar e executar as instruções de todos os robos.
-            printf("Teste ---- %d", j);
+            printf("Teste ---- %d\n", j);
             if(a->robos[j+1]!=NULL && a->robos[j+1]->vida <= 0){//Checar se o robo ficou sem vida.
                 auxPosition1 = a->robos[j+1]->position[0];
                 auxPosition2 = a->robos[j+1]->position[1];
