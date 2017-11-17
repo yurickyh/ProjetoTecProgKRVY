@@ -5,20 +5,20 @@
 FILE *display;
 INSTR programa[] = {
     //Teste 1
-    /*{MOVE, {ACAO,   0}},
+    {MOVE, {ACAO,   0}},
     {MOVE, {ACAO, 135}},
     {ATAQ, {ACAO,   0}},
     {RECO, {ACAO, 225}},
     {DEPO, {ACAO, 315}},
-    {ATAQ, {ACAO, 180}}*/
+    {ATAQ, {ACAO, 180}}
     
     //Teste 2
-    {RECO, {ACAO, 315}},
+    /*{RECO, {ACAO, 315}},
     {ATAQ, {ACAO, 225}},
     {ATAQ, {ACAO, 225}},
     {ATAQ, {ACAO, 225}},
     {RECO, {ACAO, 225}},
-    {DEPO, {ACAO, 180}}
+    {DEPO, {ACAO, 180}}*/
     
     //Teste 3
     /*{RECO, {ACAO, 315}},
