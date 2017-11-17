@@ -402,7 +402,7 @@ Coord getNeighbour(int l, int c, int angle){//Função para devolver a célula v
                 cord.x = MAXMATRIZL;
                 cord.y = MAXMATRIZC;
             } else {
-                if(c%2!=0){
+                if(l%2!=0){
                     cord.x = l+1;
                     cord.y = c+1;
                 }
