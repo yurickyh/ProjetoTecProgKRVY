@@ -57,6 +57,7 @@ void Atualiza(int rodadas, FILE *display){
                         a->matriz[auxPosition1][auxPosition2].cristal);
                     fflush(display);
                 }
+                a->matriz[auxPosition1][auxPosition2].ocup = 0;//Desocupar a célula onde estava o robo derrotado.
                 destroi_maquina(&a->robos[j+1]);//Remover o robo que ficou sem vida.
             }
             if(a->robos[j+1]!=NULL){//Checar se o robo a ter as instruções executadas não foi removido.
@@ -157,6 +158,7 @@ void RemoveExercito(Exercito *e, Exercito** ex, FILE *display){
             fprintf(display, "cristal %d %d %d\n", aux1, aux2, a->matriz[aux1][aux2].cristal + a->robos[j+1]->cristal);
             fflush(display);
         }
+        a->matriz[aux1][aux2].ocup = 0;//Desocupar a célula do robo removido.
         destroi_maquina(&a->robos[j+1]);
     }
     a->baseCount[i] = 0;
