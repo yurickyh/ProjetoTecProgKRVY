@@ -149,18 +149,20 @@ void RemoveExercito(Exercito *e, Exercito** ex, FILE *display){
     int aux2;
     a->matriz[e->base->position[0]][e->base->position[1]].ocup = 0;//Desocupa a célula onde estava a base do exército a ser removido.  
     for(j=(ROBOSONEXERC*(i-1));j<(i*ROBOSONEXERC);j++){//Loop que passa apenas pelos indíces dos robos do exército a ser removido.   
-        aux1 = a->robos[j+1]->position[0];
-        aux2 = a->robos[j+1]->position[1];
-        fprintf(display, "clean %d %d\n", aux1, aux2);//Remove o robo na interface gráfica.
-        fflush(display);
-        //Adiciona os cristais que o robo a ser removido estava carregando à célula onde ele estava.
-        a->matriz[aux1][aux2].cristal += a->robos[j+1]->cristal;
-        if((a->matriz[aux1][aux2].cristal + a->robos[j+1]->cristal) > 0){
-            fprintf(display, "cristal %d %d %d\n", aux1, aux2, a->matriz[aux1][aux2].cristal);
+        if(a->robos[j+1]!=NULL){
+            aux1 = a->robos[j+1]->position[0];
+            aux2 = a->robos[j+1]->position[1];
+            fprintf(display, "clean %d %d\n", aux1, aux2);//Remove o robo na interface gráfica.
             fflush(display);
+            //Adiciona os cristais que o robo a ser removido estava carregando à célula onde ele estava.
+            a->matriz[aux1][aux2].cristal += a->robos[j+1]->cristal;
+            if(a->matriz[aux1][aux2].cristal > 0){
+                fprintf(display, "cristal %d %d %d\n", aux1, aux2, a->matriz[aux1][aux2].cristal);
+                fflush(display);
+            }
+            a->matriz[aux1][aux2].ocup = 0;//Desocupar a célula do robo removido.
+            destroi_maquina(&a->robos[j+1]);
         }
-        a->matriz[aux1][aux2].ocup = 0;//Desocupar a célula do robo removido.
-        destroi_maquina(&a->robos[j+1]);
     }
     a->baseCount[i] = 0;
     acertaMatriz();
