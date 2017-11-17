@@ -43,6 +43,7 @@ void Atualiza(int rodadas, FILE *display){
         }
         int j;
         for(j=0;j<MAXMAQ;j++){//Loop para passar e executar as instruções de todos os robos.
+            printf("Teste ---- %d", j);
             if(a->robos[j+1]!=NULL && a->robos[j+1]->vida <= 0){//Checar se o robo ficou sem vida.
                 auxPosition1 = a->robos[j+1]->position[0];
                 auxPosition2 = a->robos[j+1]->position[1];
@@ -305,6 +306,11 @@ void Sistema(Maquina *m, char code, int op, FILE *display){
         case 'A':
             tmp = getNeighbour(m->position[0], m->position[1], op);//Pega as coordenadas da célula na direção desejada.
             printf("Robo de índice: %d --- ", m->index);
+            if(tmp.x == MAXMATRIZL || tmp.y == MAXMATRIZC)
+            {
+                printf("Tentativa de ataque em célula inválida.\n");
+                break;
+            }
             if(a->matriz[tmp.x][tmp.y].ocup == 0){
                 printf("Tentativa de ataque em célula desocupada.\n");
                 break;
