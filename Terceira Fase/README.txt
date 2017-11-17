@@ -18,13 +18,13 @@ TODOS OS CÓDIGOS FORAM TESTADOS EM LINUX UBUNTU 16.04 LTS
     Também foi adicionado pygame.font para mostrar valores importantes para o jogo:
         - no Robô, o número à esquerda representa seu id, enquanto o número verde à direita representa a quantidade de vida (de 0 a 3);
         - no Cristal, o número branco representa a quantidade de cristais na célula.
-        - na Base, o número vermelho escuro representa a quantidade de vida (de 0 a 20)
+        - na Base, o número vermelho escuro representa a quantidade de vida (de 0 até a variável BASELIFE em arena.h)
 
 *** MOTOR.C E TESTES
     
     No "motor.c" estão definidos os tipos de terreno, cores utilizadas por cada um deles e uma matriz (arena) para testes.
     A arena é inserida na representação gráfica por comandos "fprintf". Logo após são inseridos dois exércitos, executados os comandos de cada máquina, o segundo exército é removido (de forma forçada) e o jogo termina.
     O conjunto de instruções está no array de INSTR "programa", definido no início do código. Vale lembrar que todos os robôs executaram o mesmo conjunto de instruções em nosso teste.
-        - Teste 1: testa movimentação em diferentes terrenos;
-        - Teste 2: testa ataque e vida dos robôs;
-        - Teste 3: testa coleta e deposição de cristais; perda de vida da base.
+        - Teste 1: testa movimentação em diferentes terrenos e perda de rodadas;
+        - Teste 2: testa ataque e vida dos robôs e remoção de robô sem vida; depósito de cristais na base e perda de vida da base;
+        - Teste 3: testa coleta e depósito de cristais; perda de vida da base.
