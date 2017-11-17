@@ -72,7 +72,7 @@ int main(int ac, char **av) {
     //Executa 2 instruções por rodada para 6 rodadas;
     Atualiza(6, display);
     RemoveExercito(a->exerc[1], &a->exerc[1], display);
-    Atualiza(1, display);
+    //Atualiza(1, display);
     pclose(display);//Fecha o pipe.
     return 0;
 }
