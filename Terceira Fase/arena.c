@@ -43,7 +43,7 @@ void Atualiza(int rodadas, FILE *display){
         }
         int j;
         for(j=0;j<MAXMAQ;j++){//Loop para passar e executar as instruções de todos os robos.
-            printf("Teste ---- %d\n", j);
+            //printf("Teste ---- %d\n", j);
             if(a->robos[j+1]!=NULL && a->robos[j+1]->vida <= 0){//Checar se o robo ficou sem vida.
                 auxPosition1 = a->robos[j+1]->position[0];
                 auxPosition2 = a->robos[j+1]->position[1];
@@ -156,7 +156,7 @@ void RemoveExercito(Exercito *e, Exercito** ex, FILE *display){
         //Adiciona os cristais que o robo a ser removido estava carregando à célula onde ele estava.
         a->matriz[aux1][aux2].cristal += a->robos[j+1]->cristal;
         if((a->matriz[aux1][aux2].cristal + a->robos[j+1]->cristal) > 0){
-            fprintf(display, "cristal %d %d %d\n", aux1, aux2, a->matriz[aux1][aux2].cristal + a->robos[j+1]->cristal);
+            fprintf(display, "cristal %d %d %d\n", aux1, aux2, a->matriz[aux1][aux2].cristal);
             fflush(display);
         }
         a->matriz[aux1][aux2].ocup = 0;//Desocupar a célula do robo removido.
