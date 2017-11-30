@@ -1,0 +1,289 @@
+#!/usr/bin/python3
+import pygame as pg
+import fileinput
+
+from math import *
+
+pg.init()                                 # inicialização do sistema
+pg.font.init() # inicia fontes
+myfont = pg.font.SysFont('Comic Sans MS', 20)
+
+# altura e largura da arena, em células
+H, W = 8, 8
+
+# constantes para o jogo
+MAXVIDAROBO, MAXVIDABASE = 3, 20
+
+# largura da célula
+l = 30
+# altura da célula
+L = 2*l/sqrt(3)
+
+# cria a janela
+scr = pg.display.set_mode((2*W*l+l,int(1.5*L*H+L/2)))
+# só para simplificar, atualização da imagem
+atu = pg.display.update
+
+
+# pinta o fundo da janela
+scr.fill((0,200,0))
+atu()
+
+def convert(i ,j):
+    """
+    Converte a coordenada (i,j) para a posição em pixels na janela
+    """
+    x = (1 + i%2)*l + 2*j*l
+    y = 1.5*i*L + L
+    return x,y
+
+
+class Robô(pg.sprite.Sprite):
+    """
+    Representa um Robô, possui uma imagem
+    """
+    def __init__(s, img, id_robo):
+        """
+        Construtor, img é o nome do arquivo com a imagem
+        """
+        pg.sprite.Sprite.__init__(s)
+        s.image = pg.image.load(img)
+        s.rect = s.image.get_rect()
+        s.id = id_robo
+
+    def draw(s,i,j,vida):
+        """
+        Desenha o robô na célula (i,j)
+        """
+        x, y = convert(i,j)
+
+        # fronteiras do sprite
+        l0,h0,l1,h1 = s.rect
+
+        # corrije a posição de acordo com o tamanho do sprite
+        s.rect.topleft = [x-l1/2,y-h1/2]
+        # desenha
+        scr.blit(s.image, s.rect)
+
+        # coloca id do robo (soma + 1 pois id dado no objeto é para identificação na lista de robôs)
+        aux_id = int(s.id) + 1
+        text_id = myfont.render(str(aux_id), False, (0, 0, 0))
+        scr.blit(text_id, s.rect)
+
+        # coloca vida do robo
+        text_vida = myfont.render(str(vida), False, (75, 255, 138))
+        s.rect.topleft = [x+l1/3,y-h1/2]
+        scr.blit(text_vida, s.rect)
+
+
+class Base(pg.sprite.Sprite):
+    """
+    Representa uma base, possui uma imagem
+    """
+    def __init__(s, img, vida, i, j):
+        """
+        Construtor, img é o nome do arquivo com a imagem
+        """
+        pg.sprite.Sprite.__init__(s)
+        s.image = pg.image.load(img)
+        s.rect = s.image.get_rect()
+        s.vida = vida
+        s.i = i
+        s.j = j
+
+    def get_position(s):
+        return [s.i, s.j]
+
+    def atualiza_vida(s, atual):
+        s.vida = atual
+
+    def draw(s):
+        """
+        Desenha o robô na célula (i,j)
+        """
+        x, y = convert(s.i,s.j)
+
+        # fronteiras do sprite
+        l0,h0,l1,h1 = s.rect
+
+        # corrije a posição de acordo com o tamanho do sprite
+        s.rect.topleft = [x-l1/2,y-h1/2]
+        # desenha
+        scr.blit(s.image, s.rect)
+
+        # coloca vida da base
+        text_vida = myfont.render(str(s.vida), False, (94, 0, 0))
+        s.rect.topleft = [x+l1/3,y-h1/2]
+        scr.blit(text_vida, s.rect)
+
+
+class Cristal(pg.sprite.Sprite):
+    """
+    Representa um cristal
+    """
+    def __init__(s, num):
+        """
+        Construtor, img é o nome do arquivo com a imagem
+        """
+        pg.sprite.Sprite.__init__(s)
+        s.image = pg.image.load("sprites/cristal.png")
+        s.rect = s.image.get_rect()
+        s.num = num
+
+    def draw(s,i,j):
+        """
+        Desenha o cristal na célula (i,j)
+        """
+        x, y = convert(i,j)
+
+        # fronteiras do sprite
+        l0,h0,l1,h1 = s.rect
+
+        # corrije a posição de acordo com o tamanho do sprite
+        s.rect.topleft = [x+l1/3,y+h1/3]
+        # desenha
+        scr.blit(s.image, s.rect)
+
+        textsurface = myfont.render(str(s.num), False, (255, 255, 255))
+        s.rect.topleft = [x+l1,y+h1/1.4]
+        scr.blit(textsurface, s.rect)
+
+
+class cell:
+    """
+    Representa uma das células da arena
+    """
+    def __init__(s,i,j):
+        """
+        Construtor, i e j formam a coordenada
+        """
+        # Posição do centro
+        s.cx, s.cy = convert(i,j)
+        # Cor (pode ser passada para o construtor no futuro)
+        s.cor = (200,200,200)
+
+        # Vértices do hexágono
+        s.pontos = (
+            (s.cx,   s.cy-L),
+            (s.cx+l, s.cy-L/2),
+            (s.cx+l, s.cy+L/2),
+            (s.cx,   s.cy+L),
+            (s.cx-l, s.cy+L/2),
+            (s.cx-l, s.cy-L/2),
+            )
+        
+    def draw(s) :
+        """
+        Desenha a célula
+        """
+        pg.draw.polygon(scr, s.cor, s.pontos, 0)
+        pg.draw.lines(scr, (0,0,0), True, s.pontos, 2)
+
+
+# Construção da matriz que representa a arena
+arena = []
+for i in range(H):
+    arena.append([])
+    for j in range(W):
+        arena[i].append(cell(i,j))
+        arena[i][j].draw()
+
+# lista dos robôs definidos
+robs = []
+
+#lista das bases definidas
+bass = []
+
+# atualiza a janela
+atu()
+
+# Leitura dos comandos pela entrada padrão ou de um arquivo
+for line in fileinput.input():    
+    r = line.split()
+
+    # linha começando com 'fim', termina o programa
+    if r[0] == 'fim':
+        break
+
+    # linha começando com 'rob', inclui um robô,
+    # o segundo argumento na linha é a imagem   
+    if r[0] == 'rob':    
+    #Criar e posicionar o robo no mapa    
+        #print("Criacao do robo %s" %(r[2]))
+        robs.append(Robô(r[1], r[2]))
+        idRob, i, j = list(map(int, r[2:]))
+        robs[idRob].draw(i,j,MAXVIDAROBO)
+        atu()
+        pg.time.wait(100)
+        continue
+
+    if r[0] == 'cel':
+    #Comando para pintar uma celula no mapa de acordo com o terreno
+        ci, cj, cr, cg, cb = list(map(int, r[1:]))
+        arena[ci][cj].cor = (cr, cg, cb)
+        arena[ci][cj].draw()
+        atu()
+        #pg.time.wait(100)
+        continue
+
+    if r[0] == 'base':
+    #Comando para printar uma base no mapa
+        idBase, i, j = list(map(int, r[2:]))
+        bass.append(Base(r[1], MAXVIDABASE, i, j))        
+        
+        #print("Criacao da base %d" %(idBase))
+        arena[i][j].draw()
+        bass[idBase - 1].draw()
+        atu();
+        #pg.time.wait(100)
+        continue
+
+    if r[0] == 'att_base':
+        idBase, vidaAtual = list(map(int, r[1:]))
+        # apaga desenho da base atual
+        coord = bass[idBase - 1].get_position()
+        arena[coord[0]][coord[1]].draw()
+        # atualiza vida da base e desenha novamente
+        bass[idBase - 1].atualiza_vida(vidaAtual)
+        bass[idBase - 1].draw()
+        continue
+
+    if r[0] == 'cristal':
+    #Comando para printar um cristal no mapa
+        i, j, qtd_cristal = list(map(int, r[1:]))
+        #print("Criacao de %d cristal em [%d][%d]" %(qtd_cristal, i, j))
+        if(qtd_cristal != 0):
+            Cristal(qtd_cristal).draw(i,j);
+        atu();
+        pg.time.wait(100)
+        continue
+
+    if r[0] == 'clean':
+    #Comando para apagar uma celula/robo do mapa
+        i, j = list(map(int, r[1:]))
+        arena[i][j].draw()
+        atu()
+        #pg.time.wait(1000)
+        continue
+
+    # linha de movimentação:
+    # robô, corrdenadas originais, coordenadas finais
+    ri, oi, oj, di, dj, vida = list(map(int, r))
+    #print("Movendo o robo %d da posicao [%d][%d] para [%d][%d]" %(ri, oi, oj, di, dj))
+    #CORRIGINDO DOIS ERROS DO PROF. NA CONDICAO DE MOVIMENTO
+    # redesenha a célula original (apaga o robô)
+    if 0 <= oi  < H and 0 <= oj < W:
+        arena[oi][oj].draw()
+    # desenha o robô na célula de destino    
+    if 0 <= di  < H and 0 <= dj < W and ri < len(robs):
+        robs[ri].draw(di,dj, vida)
+    # tempo de espera para atualização, apenas para testes
+    
+    
+    atu()
+    pg.time.wait(1000)
+
+pg.quit()
+# Local variables:
+# mode: python
+# End:
