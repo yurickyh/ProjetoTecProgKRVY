@@ -15,6 +15,7 @@ static int mem = 6;					/* ponteiro da memória */
 static INSTR *prog;
 static int parmcnt = 0;		/* contador de parâmetros */
 
+
 void AddInstr(OpCode op, int val) {
   prog[ip++] = (INSTR) {op,  {NUM, {val}}};
 }
@@ -29,10 +30,11 @@ void AddInstr(OpCode op, int val) {
 
 /* %type  Expr */
 
+
 %token <val>  NUMt
 %token <cod> ID
 %token ADDt SUBt MULt DIVt ASGN OPEN CLOSE RETt EOL 
-%token RECOt MOVEt ATAQt DEPOt
+%token RECOt MOVEt ATAQt DEPOt ATRt
 %token EQt NEt LTt LEt GTt GEt ABRE FECHA SEP
 %token IF WHILE FUNC PRINT
 %right ASGN
@@ -71,6 +73,7 @@ Acao:  MOVEt NUMt{ AddInstr(MOVE, $2);}
 	 | RECOt NUMt{ AddInstr(RECO, $2);}
 	 | ATAQt NUMt{ AddInstr(ATAQ, $2);}
 	 | DEPOt NUMt{ AddInstr(DEPO, $2);}
+	 | ATRt NUMt{ AddInstr(ATR, $2);}
 ;
 
 Expr: NUMt {  AddInstr(PUSH, $1);}
@@ -194,8 +197,10 @@ void yyerror(char const *msg) {
 }
 
 int compilador(FILE *cod, INSTR *dest) {
+  yyrestart(cod);  
   int r;
-  yyin = cod;
+  yyrestart(yyin);
+  yyin = cod;;
   prog = dest;
   r = yyparse();
   AddInstr(END,0);
