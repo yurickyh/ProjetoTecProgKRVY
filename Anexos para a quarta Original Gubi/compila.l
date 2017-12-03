@@ -46,6 +46,10 @@ print   { return PRINT; }
 "<="	{ return LEt; }
 ">"		{ return GTt; }
 ">="	{ return GEt; }
+move  { return MOVEt; }
+deposit { return DEPOt; }
+take { return RECOt; }
+attack { return ATAQt; }
 
 .	{  fprintf(stderr, "Entrada ignorada\n-->%s\n", yytext); }
 
