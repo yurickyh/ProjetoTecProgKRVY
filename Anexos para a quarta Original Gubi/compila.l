@@ -50,6 +50,7 @@ move  { return MOVEt; }
 deposit { return DEPOt; }
 take { return RECOt; }
 attack { return ATAQt; }
+atr { return ATRt; }
 
 .	{  fprintf(stderr, "Entrada ignorada\n-->%s\n", yytext); }
 
