@@ -5,7 +5,7 @@ INSTR p1[2000];
 
 int compilador(FILE *, INSTR *);
 
-int main(int ac, char** argv/*[]*/) {  
+int main(int ac, char **argv/*[]*/) {  
   int i = 1;
   /*while(i < ac){
     FILE *p;
