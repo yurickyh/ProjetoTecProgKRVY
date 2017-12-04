@@ -43,14 +43,14 @@ print   { return PRINT; }
 ==		{ return EQt; }
 !=		{ return NEt; }
 "<"		{ return LTt; }
-"<="	{ return LEt; }
+"<="		{ return LEt; }
 ">"		{ return GTt; }
-">="	{ return GEt; }
-move  { return MOVEt; }
-deposit { return DEPOt; }
-take { return RECOt; }
-attack { return ATAQt; }
-atr { return ATRt; }
+">="		{ return GEt; }
+move  		{ return MOVEt; }
+deposit 	{ return DEPOt; }
+take 		{ return RECOt; }
+attack 		{ return ATAQt; }
+atr 		{ return ATRt; }
 
 .	{  fprintf(stderr, "Entrada ignorada\n-->%s\n", yytext); }
 

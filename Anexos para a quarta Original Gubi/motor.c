@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include "compila.tab.h"
 #include "maq.h"
 INSTR p1[2000];
@@ -31,22 +32,26 @@ int main(int ac, char **argv/*[]*/) {
     exec_maquina(maq2, 1000);
     destroi_maquina(maq);
     destroi_maquina(maq2);
-    pclose(p);//Não seria fclose?
+    pclose(p);
     pclose(p2);*/
   
-  //Teste  
-  FILE *p = fopen(argv[1], "r");
-  res = compilador(p, p1);
-  if (res) return 1;
+  //Teste Funcionando
+  FILE* files[4];
+  int res;
+  files[0] = fopen(argv[1], "r");
+  res = compilador(files[0], p1);
+  if(res) return 1;
   Maquina *maq = cria_maquina(p1);
   exec_maquina(maq, 1000);
-  fclose(p);
-  FILE *p2 = fopen(argv[2], "r");
-  res = compilador(p2, p1);
-  if (res) return 1;
+  fclose(files[0]);
+  memset(p1, 0, 2000*(sizeof p1[0]));
+  files[1] = fopen(argv[2], "r");
+  res = compilador(files[1], p1);
+  if(res) return 1;
   Maquina *maq2 = cria_maquina(p1);
   exec_maquina(maq2, 1000);
-  fclose(p2);
+  fclose(files[1]);
+  memset(p1, 0, 2000*(sizeof p1[0]));
   destroi_maquina(maq);
   destroi_maquina(maq2);
   return 0;
