@@ -35,7 +35,7 @@ int main(int ac, char **argv/*[]*/) {
     pclose(p);
     pclose(p2);*/
   
-  //Teste Funcionando
+  //Teste --- Ainda dando altos PUSH 0
   FILE* files[4];
   int res;
   files[0] = fopen(argv[1], "r");
