@@ -4,7 +4,7 @@
 #include <string.h>
 
 Arena *a;
-INSTR programa[4][2000];
+INSTR programa[MAXMAQ][2000];
 
 int compilador(FILE *, INSTR *);
 
@@ -73,7 +73,6 @@ void Atualiza(int rodadas, FILE *display){
                 else{//Senão, executar as instruções normalmente.
 		    if(a->robos[j+1]->prog == NULL) printf("Vazio %d", j);
                     exec_maquina(a->robos[j+1], INSTRNUMBER, display);
-                    printf("TEEEERMINOOOOU\n");
                 }
             }
             int y;
@@ -85,6 +84,24 @@ void Atualiza(int rodadas, FILE *display){
                 }
             }
         }
+        if(i != rodadas - 1){
+            //Ao fim de cada rodada, devem ser lidos os novos arquivos para cada robo
+            for(j=0;j<MAXMAQ;j++){
+                //isso eh feito da mesma forma quando se cria a maquina
+                FILE* file;
+                int res;
+                printf("Programa para o robo %i: ", j+1);
+                char f[20];
+                gets(f);
+                fflush(stdin);
+                file = fopen(f, "r");
+                res = compilador(file, programa[j]);
+                a->robos[j+1]->prog = programa[j]; //mudanda do vetor de instrucoes a ser executado
+                a->robos[j+1]->ip = 0; //reset do ip para comecar tudo de novo
+                fclose(file); 
+            }    
+        }
+        
     }
 }
 
@@ -112,10 +129,8 @@ Exercito *InsereExercito(int x, int y, /*INSTR *p, */FILE *display){//x e y = co
     	char f[20];
     	gets(f);
         fflush(stdin);
-        printf("Programa: %s\ni: %d\n", f, i);
     	file = fopen(f, "r");
     	res = compilador(file, programa[a->robosTopo-1]);
-    	if(res){ printf("DEEEEEEEEEEEEEUUUU RUIMMMMMMMMMMMMM\n"); return 1;}  
     	Maquina *maq = cria_maquina(programa[a->robosTopo-1]);
     	fclose(file);	
             Coord aux = avaliableNeighbour(x, y);//Pega alguma célula vizinha disponível à base do exército.
