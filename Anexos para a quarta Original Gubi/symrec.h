@@ -24,3 +24,4 @@ int isglobal(void);
 symrec *newtab(int);
 symrec *deltab(void);
 int lastval(void);
+void cleartab();
