@@ -97,6 +97,14 @@ symrec *deltab() {
   return SymStack[--topss].syms;
 }
 
+void cleartab()
+{
+	while(topss){
+		deltab();
+	}
+	delsymtab(SymStack[0]);
+	SymStack[0].syms = NULL;
+}
 
 int lastval() {
   return SymStack[topss].base;
