@@ -115,7 +115,7 @@ Cond: IF OPEN  Expr {
 		 CLOSE  Bloco {
 		   prog[pega_end()].op.val.n = ip;
 		 };
-	ELSE Bloco {
+	|ELSE Bloco {
 		prog[pega_end()].op.val.n = ip;
 		};
 
