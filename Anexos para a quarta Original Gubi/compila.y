@@ -36,7 +36,7 @@ void AddInstr(OpCode op, int val) {
 %token ADDt SUBt MULt DIVt ASGN OPEN CLOSE RETt EOL 
 %token RECOt MOVEt ATAQt DEPOt ATRt
 %token EQt NEt LTt LEt GTt GEt ABRE FECHA SEP
-%token IF WHILE FUNC PRINT
+%token IF WHILE FUNC PRINT ELSE
 %right ASGN
 %left ADDt SUBt
 %left MULt DIVt
@@ -115,6 +115,9 @@ Cond: IF OPEN  Expr {
 		 CLOSE  Bloco {
 		   prog[pega_end()].op.val.n = ip;
 		 };
+	ELSE Bloco {
+		prog[pega_end()].op.val.n = ip;
+		};
 
 Loop: WHILE OPEN  {salva_end(ip);}
 	  		Expr  { salva_end(ip); AddInstr(JIF,0); }
