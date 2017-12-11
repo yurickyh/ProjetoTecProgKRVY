@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "arena.h"
 #include <string.h>
-//#include "compila.tab.h"
+#include "compila.tab.h"
 
 FILE *display;
 //INSTR programa[2000];
@@ -15,7 +15,9 @@ FILE *display;
 
 };*/
 
-int main(int ac, char **argv) {
+int compilador(FILE *, INSTR *);
+
+int main(int ac, char *argv[]) {
     //Descomentar os testes no vetor programa, um por execução.
     int lin = 0, col = 0, color = 0;
     char *TER[] = {

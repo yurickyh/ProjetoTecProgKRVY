@@ -1,4 +1,4 @@
-//#include "compila.tab.h"
+#include "compila.tab.h"
 #include "maq.h"
 
 #define MAXMAQ 4
@@ -46,6 +46,7 @@ typedef struct{
 } Arena;
 
 extern Arena *a;
+extern INSTR programa[4][2000];
 
 typedef struct{
     int x;
@@ -62,3 +63,4 @@ void acertaMatriz();
 void Sistema(Maquina *m, char code, int op, FILE *display);
 Coord getNeighbour(int l, int c, int angle);
 Coord avaliableNeighbour(int l, int c);
+int compilador(FILE *, INSTR *);
