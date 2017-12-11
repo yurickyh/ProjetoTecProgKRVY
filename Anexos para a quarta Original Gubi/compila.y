@@ -53,16 +53,16 @@ Programa: Comando
 	   ;
 
 Comando: Acao EOL
-	   | Expr EOL
+       | Expr EOL
        | Cond
        | Loop
        | Func
-	   | PRINT Expr EOL { AddInstr(PRN, 0);}	   
-	   | RETt EOL {
-		 	     AddInstr(LEAVE, 0);
-			     AddInstr(RET, 0);
- 			  }
-	   | RETt OPEN  Expr CLOSE EOL {
+       | PRINT Expr EOL { AddInstr(PRN, 0);}	   
+       | RETt EOL {
+       		AddInstr(LEAVE, 0);
+		AddInstr(RET, 0);
+		}
+	| RETt OPEN  Expr CLOSE EOL {
 		 	     AddInstr(LEAVE, 0);
 			     AddInstr(RET,0);
  		      } 	 	   	    		  
@@ -200,22 +200,12 @@ void yyerror(char const *msg) {
 }
 
 int compilador(FILE *cod, INSTR *dest) {
-  yyrestart(cod);  
   int r;
-  yyrestart(yyin);
-  yyin = cod;;
+  yyin = cod;
   prog = dest;
+  cleartab();
+  ip = 0;
   r = yyparse();
   AddInstr(END,0);
   return r;
 }
-
-/* int main(int ac, char **av) */
-/* { */
-/*   ac --; av++; */
-/*   if (ac>0) */
-/* 	yyin = fopen(*av,"r"); */
-
-/*   yyparse(); */
-/*   return 0; */
-/* } */
