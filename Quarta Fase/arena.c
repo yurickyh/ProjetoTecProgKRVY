@@ -4,6 +4,9 @@
 #include <string.h>
 
 Arena *a;
+INSTR programa[4][2000];
+
+int compilador(FILE *, INSTR *);
 
 static void Erro(char *msg) {
     fprintf(stderr,"%s\n", msg);
@@ -70,6 +73,7 @@ void Atualiza(int rodadas, FILE *display){
                 else{//Senão, executar as instruções normalmente.
 		    if(a->robos[j+1]->prog == NULL) printf("Vazio %d", j);
                     exec_maquina(a->robos[j+1], INSTRNUMBER, display);
+                    printf("TEEEERMINOOOOU\n");
                 }
             }
             int y;
@@ -101,35 +105,36 @@ Exercito *InsereExercito(int x, int y, /*INSTR *p, */FILE *display){//x e y = co
         fprintf(display, "base sprites/base2r.png %d %d %d\n", a->matriz[x][y].baseColour, x, y); //criar a base azul
     }
     fflush(display);  
-    for(i=0;i<ROBOSONEXERC;i++){//Loop para criar todos os robos do exército.
-	INSTR programa[2000];
-	FILE* file;
-	int res;
-	printf("Programa para o robo %i: ", a->robosTopo);
-	char f[20];
-	scanf("%s", &f); 
-	file = fopen(f, "r");
-	res = compilador(file, programa);
-	//if(res) return 1;	    
-	Maquina *maq = cria_maquina(programa);
-	fclose(file);	
-        Coord aux = avaliableNeighbour(x, y);//Pega alguma célula vizinha disponível à base do exército.
-        if(aux.x!=MAXMATRIZL && aux.y!=MAXMATRIZC){//Se a função retornar as coordenadas (MAXMATRIZL, MAXMATRIZC), não há células disponíveis.	    
-            maq->position[0] = aux.x;
-            maq->position[1] = aux.y;
-            maq->index = a->robosTopo;
-            a->robos[a->robosTopo++] = maq;
-            a->matriz[aux.x][aux.y].ocup = maq->index; 
-        }
-        if(a->matriz[x][y].baseColour == 1){//Desenha o robo do exército 1 na interface gráfica numa célula vizinha disponível.
-            fprintf(display, "rob sprites/robo1.png %d %d %d\n", maq->index-1, maq->position[0], maq->position[1]);            
-            fflush(display); 
-        }
-        if(a->matriz[x][y].baseColour == 2){//Desenha o robo do exército 2 na interface gráfica numa célula vizinha disponível.
-            fprintf(display, "rob sprites/robo2.png %d %d %d\n", maq->index-1, maq->position[0], maq->position[1]);
-            fflush(display); 
-        }
-        e->robots[i] = maq;//Adiciona o robo no vetor de robos do seu exército.
+    for(i=0;i<ROBOSONEXERC;i++){//Loop para criar todos os robos do exército.	
+    	FILE* file;
+    	int res;
+    	printf("Programa para o robo %i: ", a->robosTopo);
+    	char f[20];
+    	gets(f);
+        fflush(stdin);
+        printf("Programa: %s\ni: %d\n", f, i);
+    	file = fopen(f, "r");
+    	res = compilador(file, programa[a->robosTopo-1]);
+    	if(res){ printf("DEEEEEEEEEEEEEUUUU RUIMMMMMMMMMMMMM\n"); return 1;}  
+    	Maquina *maq = cria_maquina(programa[a->robosTopo-1]);
+    	fclose(file);	
+            Coord aux = avaliableNeighbour(x, y);//Pega alguma célula vizinha disponível à base do exército.
+            if(aux.x!=MAXMATRIZL && aux.y!=MAXMATRIZC){//Se a função retornar as coordenadas (MAXMATRIZL, MAXMATRIZC), não há células disponíveis.	    
+                maq->position[0] = aux.x;
+                maq->position[1] = aux.y;
+                maq->index = a->robosTopo;
+                a->robos[a->robosTopo++] = maq;
+                a->matriz[aux.x][aux.y].ocup = maq->index; 
+            }
+            if(a->matriz[x][y].baseColour == 1){//Desenha o robo do exército 1 na interface gráfica numa célula vizinha disponível.
+                fprintf(display, "rob sprites/robo1.png %d %d %d\n", maq->index-1, maq->position[0], maq->position[1]);            
+                fflush(display); 
+            }
+            if(a->matriz[x][y].baseColour == 2){//Desenha o robo do exército 2 na interface gráfica numa célula vizinha disponível.
+                fprintf(display, "rob sprites/robo2.png %d %d %d\n", maq->index-1, maq->position[0], maq->position[1]);
+                fflush(display); 
+            }
+            e->robots[i] = maq;//Adiciona o robo no vetor de robos do seu exército.
     }    
     return e;
 }
