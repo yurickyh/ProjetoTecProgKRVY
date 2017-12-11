@@ -46,7 +46,7 @@ typedef struct{
 } Arena;
 
 extern Arena *a;
-extern INSTR programa[4][2000];
+extern INSTR programa[MAXMAQ][2000];
 
 typedef struct{
     int x;
