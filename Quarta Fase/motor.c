@@ -5,15 +5,25 @@
 
 FILE *display;
 //INSTR programa[2000];
-/*INSTR programa[] = {   
+INSTR programa2[] = {   
 	{MOVE, {ACAO, 0}},
-	{MOVE, {ACAO, 135}},
-	{ATAQ, {ACAO, 0}},
-	{RECO, {ACAO, 225}},
-	{DEPO, {ACAO, 315}},
-	{ATAQ, {ACAO, 180}}
+    {END, {NUM, 0}}
+};
 
-};*/
+INSTR programa3[] = {  
+    {MOVE, {ACAO, 225}},
+    {RECO, {ACAO, 225}},
+    {DEPO, {ACAO, 225}},
+    {END, {NUM, 0}}
+};
+
+INSTR fat4[] = { 
+    {PUSH, {NUM, 5}},
+    {PUSH, {NUM, 6}},
+    {ADD, {NUM, 0}},
+    {PRN, {NUM, 0}},
+    {END, {NUM, 0}}
+};
 
 int compilador(FILE *, INSTR *);
 
