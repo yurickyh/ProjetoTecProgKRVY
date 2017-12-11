@@ -29,10 +29,6 @@ char *CODES[] = {
     "RCL",
     "END",
     "PRN",
-    "STL",
-    "RCE",
-    "ALC",
-    "FRE",
     "ATR",
     "MOVE",
     "RECO",
@@ -100,7 +96,6 @@ void exec_maquina(Maquina *m, int n, FILE *display) {
     char *TYP[] = {
         "NUM",
         "ACAO",
-        "VAR",
         "CEL",
         "TER"
     };
