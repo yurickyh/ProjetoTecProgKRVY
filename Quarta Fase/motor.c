@@ -1,32 +1,21 @@
 #include <stdio.h>
 #include "arena.h"
 #include <string.h>
+//#include "compila.tab.h"
 
 FILE *display;
-INSTR programa[] = {
-    //Teste 1
-    // {MOVE, {ACAO,   0}},
-    // {MOVE, {ACAO, 135}},
-    // {ATAQ, {ACAO,   0}},
-    // {RECO, {ACAO, 225}},
-    // {DEPO, {ACAO, 315}},
-    // {ATAQ, {ACAO, 180}}
-    
-    //Teste 2
-    // {RECO, {ACAO, 315}},
-    // {ATAQ, {ACAO, 225}},
-    // {ATAQ, {ACAO, 225}},
-    // {ATAQ, {ACAO, 225}},
-    // {RECO, {ACAO, 225}},
-    // {DEPO, {ACAO, 180}}
-    
-    //Teste 3
-    {RECO, {ACAO, 315}},
-    {RECO, {ACAO,   0}},
-    {DEPO, {ACAO, 180}}  
-};
+//INSTR programa[2000];
+/*INSTR programa[] = {   
+	{MOVE, {ACAO, 0}},
+	{MOVE, {ACAO, 135}},
+	{ATAQ, {ACAO, 0}},
+	{RECO, {ACAO, 225}},
+	{DEPO, {ACAO, 315}},
+	{ATAQ, {ACAO, 180}}
 
-int main(int ac, char **av) {
+};*/
+
+int main(int ac, char **argv) {
     //Descomentar os testes no vetor programa, um por execução.
     int lin = 0, col = 0, color = 0;
     char *TER[] = {
@@ -67,12 +56,12 @@ int main(int ac, char **av) {
         }
     }
     //Adiciona os 2 exércitos.
-    a->exerc[a->exercTopo++] = InsereExercito(0, 0, programa, display);
-    a->exerc[a->exercTopo++] = InsereExercito(7, 7, programa, display);
+    a->exerc[a->exercTopo++] = InsereExercito(0, 0, display);
+    a->exerc[a->exercTopo++] = InsereExercito(7, 7, display);
     //Executa 2 instruções por rodada para 6 rodadas;
     Atualiza(2, display);
-    RemoveExercito(a->exerc[1], &a->exerc[1], display);
-    Atualiza(1, display);
+    //RemoveExercito(a->exerc[1], &a->exerc[1], display);
+    Atualiza(2, display);
     pclose(display);//Fecha o pipe.
     return 0;
 }

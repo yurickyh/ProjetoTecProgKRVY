@@ -1,34 +1,34 @@
 /* Códigos das instruções */
 typedef enum {
-    PUSH,
-    POP,
-    DUP,
-    ADD,
-    SUB,
-    MUL,
-    DIV,
-    JMP,
-    JIT,
-    JIF,
-    CALL,
-    RET,
-    EQ,
-    GT,
-    GE,
-    LT,
-    LE,
-    NE,
-    STO,
-    RCL,
-    END,
-    PRN,
-    ATR,
-    MOVE,
-    RECO,
-    DEPO,
-    ATAQ,
-    ENTRY,
-    LEAVE
+  PUSH,
+  POP,
+  DUP,
+  ADD,
+  SUB,
+  MUL,
+  DIV,
+  JMP,
+  JIT,
+  JIF,
+  CALL,
+  RET,
+  EQ,
+  GT,
+  GE,
+  LT,
+  LE,
+  NE,
+  STO,
+  RCL,
+  END,
+  PRN,
+  ATR,
+  ENTRY,
+  LEAVE,
+  MOVE,
+  ATAQ,
+  DEPO,
+  RECO
 } OpCode;
 
 typedef enum{
@@ -49,11 +49,6 @@ typedef struct {
             int baseColour;
         } CEL;
     } Controlador;
-    /*union {
-    int n;
-    int ac;
-    int v;
-    } val;*/ 
 } OPERANDO;
 
 /* Instrução */

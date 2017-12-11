@@ -1,3 +1,4 @@
+#include "compila.tab.h"
 #include "maq.h"
 
 #define MAXMAQ 4
@@ -53,7 +54,7 @@ typedef struct{
 
 void CriaArena();
 void Atualiza(int rodadas, FILE *display);
-Exercito *InsereExercito(int x, int y, INSTR *p, FILE *display);
+Exercito *InsereExercito(int x, int y, /*INSTR *p, */FILE *display);
 Base *createBase();
 void destroiBase(Base** b);
 void RemoveExercito(Exercito *e, Exercito** ex, FILE *display);

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "arena.h"
+#include <string.h>
 
 Arena *a;
 
@@ -67,6 +68,7 @@ void Atualiza(int rodadas, FILE *display){
                     a->robos[j+1]->count--;
                 }
                 else{//Senão, executar as instruções normalmente.
+		    if(a->robos[j+1]->prog == NULL) printf("Vazio %d", j);
                     exec_maquina(a->robos[j+1], INSTRNUMBER, display);
                 }
             }
@@ -82,7 +84,7 @@ void Atualiza(int rodadas, FILE *display){
     }
 }
 
-Exercito *InsereExercito(int x, int y, INSTR *p, FILE *display){//x e y = coordenadas da base desse novo exército.
+Exercito *InsereExercito(int x, int y, /*INSTR *p, */FILE *display){//x e y = coordenadas da base desse novo exército.
     Exercito *e = (Exercito*)malloc(sizeof(Exercito));
     if(!e) Fatal("Memória insuficiente",4);
     int i;
@@ -100,9 +102,19 @@ Exercito *InsereExercito(int x, int y, INSTR *p, FILE *display){//x e y = coorde
     }
     fflush(display);  
     for(i=0;i<ROBOSONEXERC;i++){//Loop para criar todos os robos do exército.
-        Maquina *maq = cria_maquina(p);
+	INSTR programa[2000];
+	FILE* file;
+	int res;
+	printf("Programa para o robo %i: ", a->robosTopo);
+	char f[20];
+	scanf("%s", &f); 
+	file = fopen(f, "r");
+	res = compilador(file, programa);
+	//if(res) return 1;	    
+	Maquina *maq = cria_maquina(programa);
+	fclose(file);	
         Coord aux = avaliableNeighbour(x, y);//Pega alguma célula vizinha disponível à base do exército.
-        if(aux.x!=MAXMATRIZL && aux.y!=MAXMATRIZC){//Se a função retornar as coordenadas (MAXMATRIZL, MAXMATRIZC), não há células disponíveis.
+        if(aux.x!=MAXMATRIZL && aux.y!=MAXMATRIZC){//Se a função retornar as coordenadas (MAXMATRIZL, MAXMATRIZC), não há células disponíveis.	    
             maq->position[0] = aux.x;
             maq->position[1] = aux.y;
             maq->index = a->robosTopo;
