@@ -22,9 +22,6 @@ typedef enum {
     RCL,
     END,
     PRN,
-    STL,
-    ALC,
-    FRE,
     ATR,
     MOVE,
     RECO,
@@ -37,7 +34,6 @@ typedef enum {
 typedef enum{
     NUM,
     ACAO,
-    VAR,
     CEL,
     TER
 } Tipo;
@@ -51,7 +47,6 @@ typedef struct {
             int cristal;
             int ocup;
             int baseColour;
-            //Base base;
         } CEL;
     } Controlador;
     /*union {
