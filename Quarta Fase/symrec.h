@@ -1,9 +1,9 @@
 /* Data type for links in the chain of symbols.      */
 struct symrec
 {
-  char *name;  /* name of symbol                     */
-  int val;
-  struct symrec *next;    /* link field              */
+	char *name;  /* name of symbol                     */
+	int val;
+	struct symrec *next;    /* link field              */
 };
 
 typedef struct symrec symrec;

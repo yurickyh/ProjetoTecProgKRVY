@@ -40,8 +40,8 @@ int main(int ac, char *argv[]) {
             fprintf(display, "cel %d %d %s\n", lin, col, Color[a->matriz[lin][col].terrain]);
             if(a->matriz[lin][col].cristal != 0){
                 fprintf(display, "cristal %d %d %d\n", lin, col, a->matriz[lin][col].cristal);
-            }                 
-            fflush(display);   
+            }
+            fflush(display);
         }
     }
     a->exerc[a->exercTopo++] = InsereExercito(0, 0, display);

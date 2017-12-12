@@ -27,12 +27,13 @@ void CriaArena(){
 void Atualiza(int rodadas, FILE *display){
     int i;
     for(i=0;i<rodadas;i++){
-	printf("!!*******Rodada %d*******!!\n", i+1);
+    printf("!!*******Rodada %d*******!!\n", i+1);
         int u;
         int count = 0;
         int aux;
         int auxPosition1;
         int auxPosition2;
+
         for(u=1;u<MAXEXERC+1;u++){//Checar se há apenas uma base ativa, isto é, checar se alguem ganhou.
             if(a->baseCount[u] != 0){
                 count++;
@@ -42,11 +43,14 @@ void Atualiza(int rodadas, FILE *display){
                 aux = u;
             }
         }
+
         if(count==1){
             printf("Fim de jogo! Exército %d ganhou\n", aux);//Se houve algum ganhador, a aplicação encerra.
             exit(0);
         }
+
         int j;
+
         for(j=0;j<MAXMAQ;j++){//Loop para passar e executar as instruções de todos os robos.
             //printf("Teste ---- %d\n", j);
             if(a->robos[j+1]!=NULL && a->robos[j+1]->vida <= 0){//Checar se o robo ficou sem vida.
@@ -66,16 +70,18 @@ void Atualiza(int rodadas, FILE *display){
                 a->matriz[auxPosition1][auxPosition2].ocup = 0;//Desocupar a célula onde estava o robo derrotado.
                 destroi_maquina(&a->robos[j+1]);//Remover o robo que ficou sem vida.
             }
+
             if(a->robos[j+1]!=NULL){//Checar se o robo a ter as instruções executadas não foi removido.
                 if(a->robos[j+1]->count!=0){//Se estiver com algum valor no contador, o robo não poderá jogar essa rodada.
                     printf("Robo %d perde essa rodada.\n", a->robos[j+1]->index);
                     a->robos[j+1]->count--;
                 }
-                else{//Senão, executar as instruções normalmente.
-		    if(a->robos[j+1]->prog == NULL) printf("Vazio %d", j);
+                else{ //Senão, executar as instruções normalmente.
+                    if(a->robos[j+1]->prog == NULL) printf("Vazio %d", j);
                     exec_maquina(a->robos[j+1], INSTRNUMBER, display);
                 }
             }
+
             int y;
             for(y=0;y<MAXEXERC;y++){//Loop para checar todos os exércitos.
                 if(a->exerc[y]!=NULL){//Se o exército a ser checado não foi removido.
@@ -85,31 +91,31 @@ void Atualiza(int rodadas, FILE *display){
                 }
             }
         }
+
         if(i != rodadas - 1){
             //Ao fim de cada rodada, devem ser lidos os novos arquivos para cada robo
             for(j=0;j<MAXMAQ;j++){
-		if(a->robos[j+1]!=NULL){
-                //isso eh feito da mesma forma quando se cria a maquina
-                FILE* file;
-                int res, nl;
-                printf("Programa para o robo %i: ", j+1);
-                char f[20];
-                fgets(f, 20, stdin);
-		nl = strlen(f)-1;
-		if(f[nl] == '\n') f[nl] = '\0';               
-                file = fopen(f, "r");
-                res = compilador(file, programa[j]);
-                a->robos[j+1]->prog = programa[j]; //Mudando do vetor de instrucoes a ser executado
-                a->robos[j+1]->ip = 0; //Reset do ip para comecar tudo de novo
-                fclose(file); }
-		else{printf("Robo %d está morto.\n", j+1);}
+                if(a->robos[j+1]!=NULL){
+                    //isso eh feito da mesma forma quando se cria a maquina
+                    FILE* file;
+                    int res, nl;
+                    printf("Programa para o robo %i: ", j+1);
+                    char f[20];
+                    fgets(f, 20, stdin);
+                    nl = strlen(f)-1;
+                    if(f[nl] == '\n') f[nl] = '\0';               
+                    file = fopen(f, "r");
+                    res = compilador(file, programa[j]);
+                    a->robos[j+1]->prog = programa[j]; //Mudando do vetor de instrucoes a ser executado
+                    a->robos[j+1]->ip = 0; //Reset do ip para comecar tudo de novo
+                    fclose(file);
+                } else { printf("Robo %d está morto.\n", j+1); }
             }    
         }
-        
     }
 }
 
-Exercito *InsereExercito(int x, int y, /*INSTR *p, */FILE *display){//x e y = coordenadas da base desse novo exército.
+Exercito *InsereExercito(int x, int y, /*INSTR *p, */FILE *display){ // x e y = coordenadas da base desse novo exército.
     Exercito *e = (Exercito*)malloc(sizeof(Exercito));
     if(!e) Fatal("Memória insuficiente",4);
     int i;
@@ -126,36 +132,40 @@ Exercito *InsereExercito(int x, int y, /*INSTR *p, */FILE *display){//x e y = co
         fprintf(display, "base sprites/base2r.png %d %d %d\n", a->matriz[x][y].baseColour, x, y); //criar a base azul
     }
     fflush(display);  
-    for(i=0;i<ROBOSONEXERC;i++){//Loop para criar todos os robos do exército.	
-    	FILE* file;
-    	int res, nl;
-    	printf("Programa para o robo %i: ", a->robosTopo);
-    	char f[20];	
-	fgets(f, 20, stdin);
-	nl = strlen(f)-1;
-	if(f[nl] == '\n') f[nl] = '\0';
-    	file = fopen(f, "r");
-    	res = compilador(file, programa[a->robosTopo-1]);
-    	Maquina *maq = cria_maquina(programa[a->robosTopo-1]);
-    	fclose(file);	
-            Coord aux = avaliableNeighbour(x, y);//Pega alguma célula vizinha disponível à base do exército.
-            if(aux.x!=MAXMATRIZL && aux.y!=MAXMATRIZC){//Se a função retornar as coordenadas (MAXMATRIZL, MAXMATRIZC), não há células disponíveis.	    
-                maq->position[0] = aux.x;
-                maq->position[1] = aux.y;
-                maq->index = a->robosTopo;
-                a->robos[a->robosTopo++] = maq;
-                a->matriz[aux.x][aux.y].ocup = maq->index; 
-            }
-            if(a->matriz[x][y].baseColour == 1){//Desenha o robo do exército 1 na interface gráfica numa célula vizinha disponível.
-                fprintf(display, "rob sprites/robo1.png %d %d %d\n", maq->index-1, maq->position[0], maq->position[1]);            
-                fflush(display); 
-            }
-            if(a->matriz[x][y].baseColour == 2){//Desenha o robo do exército 2 na interface gráfica numa célula vizinha disponível.
-                fprintf(display, "rob sprites/robo2.png %d %d %d\n", maq->index-1, maq->position[0], maq->position[1]);
-                fflush(display); 
-            }
-            e->robots[i] = maq;//Adiciona o robo no vetor de robos do seu exército.
-    }    
+    for(i=0;i<ROBOSONEXERC;i++) {//Loop para criar todos os robos do exército.	
+        FILE* file;
+        int res, nl;
+        printf("Programa para o robo %i: ", a->robosTopo);
+        char f[20];	
+        fgets(f, 20, stdin);
+
+        nl = strlen(f)-1;
+        if(f[nl] == '\n') f[nl] = '\0';
+
+        file = fopen(f, "r");
+        res = compilador(file, programa[a->robosTopo-1]);
+        Maquina *maq = cria_maquina(programa[a->robosTopo-1]);
+        fclose(file);
+
+        Coord aux = avaliableNeighbour(x, y);//Pega alguma célula vizinha disponível à base do exército.
+
+        if(aux.x!=MAXMATRIZL && aux.y!=MAXMATRIZC){//Se a função retornar as coordenadas (MAXMATRIZL, MAXMATRIZC), não há células disponíveis.	    
+            maq->position[0] = aux.x;
+            maq->position[1] = aux.y;
+            maq->index = a->robosTopo;
+            a->robos[a->robosTopo++] = maq;
+            a->matriz[aux.x][aux.y].ocup = maq->index; 
+        }
+        if(a->matriz[x][y].baseColour == 1){//Desenha o robo do exército 1 na interface gráfica numa célula vizinha disponível.
+            fprintf(display, "rob sprites/robo1.png %d %d %d\n", maq->index-1, maq->position[0], maq->position[1]);            
+            fflush(display); 
+        }
+        if(a->matriz[x][y].baseColour == 2){//Desenha o robo do exército 2 na interface gráfica numa célula vizinha disponível.
+            fprintf(display, "rob sprites/robo2.png %d %d %d\n", maq->index-1, maq->position[0], maq->position[1]);
+            fflush(display); 
+        }
+        e->robots[i] = maq;//Adiciona o robo no vetor de robos do seu exército.
+    }
     return e;
 }
 
@@ -204,7 +214,7 @@ void RemoveExercito(Exercito *e, Exercito** ex, FILE *display){
     a->baseCount[i] = 0;
     acertaMatriz();
     fprintf(display, "clean %d %d\n", e->base->position[0], e->base->position[1]);
-    fflush(display);    
+    fflush(display);
     destroiBase(&e->base);
     free(*ex);
     *ex = NULL;
@@ -463,8 +473,7 @@ Coord getNeighbour(int l, int c, int angle){//Função para devolver a célula v
     return cord;
 }
 
-Coord avaliableNeighbour(int l, int c)//Função para pegar alguma célula vizinha disponível. A ordem de checagem segue no sentido anti-horário.
-{
+Coord avaliableNeighbour(int l, int c) {//Função para pegar alguma célula vizinha disponível. A ordem de checagem segue no sentido anti-horário.
     Coord co[] = {getNeighbour(l, c, 0), getNeighbour(l, c, 45), getNeighbour(l, c, 135), getNeighbour(l, c, 180), getNeighbour(l, c, 225), getNeighbour(l, c, 315)};
     int i;
     for(i=0; i<6; i++)
@@ -473,8 +482,8 @@ Coord avaliableNeighbour(int l, int c)//Função para pegar alguma célula vizin
         {
             if(a->matriz[co[i].x][co[i].y].ocup==0)
             {
-                return co[i];            
-            }        
+                return co[i];
+            }
         }
     }
     co[0].x = MAXMATRIZL;
@@ -482,41 +491,38 @@ Coord avaliableNeighbour(int l, int c)//Função para pegar alguma célula vizin
     return co[0];
 }
 
-int NeighbourLook(int x, int y, int angle, int t)
-{
-	char *TER[] = {
+int NeighbourLook(int x, int y, int angle, int t) {
+    char *TER[] = {
         "road",
         "mountain",
         "river"
-        }; 
+        };
 
-	char terr[10];            
-        char mount[10];
-        char riv[10];
+    char terr[10];
+    char mount[10];
+    char riv[10];
 
-	Coord cord = getNeighbour(x, y, angle);
-	if(cord.x == MAXMATRIZL || cord.y == MAXMATRIZC) return -1;
-	else
-	{
-		switch(t) 
-		{
-			case(0):			  
-			  strcpy(terr, TER[a->matriz[cord.x][cord.y].terrain]);
-            		  strcpy(riv, "river");
-            		  strcpy(mount, "mountain");       
-           		  if(strcmp(terr, mount) == 0) return 1;                
-            		  if(strcmp(terr, riv) == 0) return 2;
-                	  return 0;		
-			  break;
-			case(1):
-			  return a->matriz[cord.x][cord.y].cristal;
-			  break;
-			case(2):
-			  return a->matriz[cord.x][cord.y].ocup;
-			  break;
-			case(3):
-			  return a->matriz[cord.x][cord.y].baseColour;
-			  break;			
-		}	
-	}
+    Coord cord = getNeighbour(x, y, angle);
+    if(cord.x == MAXMATRIZL || cord.y == MAXMATRIZC) return -1;
+    else {
+        switch(t) {
+            case(0):
+                strcpy(terr, TER[a->matriz[cord.x][cord.y].terrain]);
+                strcpy(riv, "river");
+                strcpy(mount, "mountain");
+                if(strcmp(terr, mount) == 0) return 1;
+                if(strcmp(terr, riv) == 0) return 2;
+                return 0;
+                break;
+            case(1):
+                return a->matriz[cord.x][cord.y].cristal;
+                break;
+            case(2):
+                return a->matriz[cord.x][cord.y].ocup;
+                break;
+            case(3):
+                return a->matriz[cord.x][cord.y].baseColour;
+                break;
+        }
+    }
 }
