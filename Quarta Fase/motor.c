@@ -1,31 +1,8 @@
 #include <stdio.h>
 #include "arena.h"
 #include <string.h>
-#include "compila.tab.h"
 
 FILE *display;
-//INSTR programa[2000];
-INSTR programa2[] = {   
-	{MOVE, {ACAO, 0}},
-    {END, {NUM, 0}}
-};
-
-INSTR programa3[] = {  
-    {MOVE, {ACAO, 225}},
-    {RECO, {ACAO, 225}},
-    {DEPO, {ACAO, 225}},
-    {END, {NUM, 0}}
-};
-
-INSTR fat4[] = { 
-    {PUSH, {NUM, 5}},
-    {PUSH, {NUM, 6}},
-    {ADD, {NUM, 0}},
-    {PRN, {NUM, 0}},
-    {END, {NUM, 0}}
-};
-
-int compilador(FILE *, INSTR *);
 
 int main(int ac, char *argv[]) {
     //Descomentar os testes no vetor programa, um por execução.
@@ -67,13 +44,9 @@ int main(int ac, char *argv[]) {
             fflush(display);   
         }
     }
-    //Adiciona os 2 exércitos.
     a->exerc[a->exercTopo++] = InsereExercito(0, 0, display);
     a->exerc[a->exercTopo++] = InsereExercito(7, 7, display);
-    //Executa 2 instruções por rodada para 6 rodadas;
-    Atualiza(2, display);
-    //RemoveExercito(a->exerc[1], &a->exerc[1], display);
-    Atualiza(2, display);
+    Atualiza(5, display);
     pclose(display);//Fecha o pipe.
     return 0;
 }

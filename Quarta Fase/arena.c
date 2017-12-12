@@ -27,6 +27,7 @@ void CriaArena(){
 void Atualiza(int rodadas, FILE *display){
     int i;
     for(i=0;i<rodadas;i++){
+	printf("Rodada %d!!\n", i+1);
         int u;
         int count = 0;
         int aux;
@@ -67,7 +68,7 @@ void Atualiza(int rodadas, FILE *display){
             }
             if(a->robos[j+1]!=NULL){//Checar se o robo a ter as instruções executadas não foi removido.
                 if(a->robos[j+1]->count!=0){//Se estiver com algum valor no contador, o robo não poderá jogar essa rodada.
-                    printf("Robo %2d perde essa rodada.\n", a->robos[j+1]->index-1);
+                    printf("Robo %2d perde essa rodada.\n", a->robos[j+1]->index);
                     a->robos[j+1]->count--;
                 }
                 else{//Senão, executar as instruções normalmente.
@@ -89,11 +90,12 @@ void Atualiza(int rodadas, FILE *display){
             for(j=0;j<MAXMAQ;j++){
                 //isso eh feito da mesma forma quando se cria a maquina
                 FILE* file;
-                int res;
+                int res, nl;
                 printf("Programa para o robo %i: ", j+1);
                 char f[20];
-                gets(f);
-                fflush(stdin);
+                fgets(f, 20, stdin);
+		nl = strlen(f)-1;
+		if(f[nl] == '\n') f[nl] = '\0';               
                 file = fopen(f, "r");
                 res = compilador(file, programa[j]);
                 a->robos[j+1]->prog = programa[j]; //mudanda do vetor de instrucoes a ser executado
@@ -124,11 +126,12 @@ Exercito *InsereExercito(int x, int y, /*INSTR *p, */FILE *display){//x e y = co
     fflush(display);  
     for(i=0;i<ROBOSONEXERC;i++){//Loop para criar todos os robos do exército.	
     	FILE* file;
-    	int res;
+    	int res, nl;
     	printf("Programa para o robo %i: ", a->robosTopo);
-    	char f[20];
-    	gets(f);
-        fflush(stdin);
+    	char f[20];	
+	fgets(f, 20, stdin);
+	nl = strlen(f)-1;
+	if(f[nl] == '\n') f[nl] = '\0';
     	file = fopen(f, "r");
     	res = compilador(file, programa[a->robosTopo-1]);
     	Maquina *maq = cria_maquina(programa[a->robosTopo-1]);
@@ -236,7 +239,7 @@ void Sistema(Maquina *m, char code, int op, FILE *display){
         Coord tmp2;
         case 'M':
             if(m->count != 0){//Se o robo não estiver com o contador zerado, ele não pode andar.
-                printf("Robo %2d não pode se mover mais nessa rodada.\n", m->index-1);
+                printf("Robo %2d não pode se mover mais nessa rodada.\n", m->index);
                 return;
             }
             tmp = getNeighbour(m->position[0], m->position[1], op);//Pega as coordenadas da célula na direção desejada.

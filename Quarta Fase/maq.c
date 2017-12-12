@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "maq.h"
 
-#define DEBUG
+//#define DEBUG
 
 #ifdef DEBUG
 #  define D(X) X
@@ -40,6 +40,8 @@ char *CODES[] = {
 #else
 #  define D(X)
 #endif
+
+void Sistema(Maquina *m, char code, int op, FILE *display);
 
 static void Erro(char *msg) {
   fprintf(stderr, "%s\n", msg);
