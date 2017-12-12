@@ -27,7 +27,7 @@ void CriaArena(){
 void Atualiza(int rodadas, FILE *display){
     int i;
     for(i=0;i<rodadas;i++){
-	printf("Rodada %d!!\n", i+1);
+	printf("!!*******Rodada %d*******!!\n", i+1);
         int u;
         int count = 0;
         int aux;
@@ -43,7 +43,7 @@ void Atualiza(int rodadas, FILE *display){
             }
         }
         if(count==1){
-            printf("Fim de jogo! Exército %2d ganhou\n", aux);//Se houve algum ganhador, a aplicação encerra.
+            printf("Fim de jogo! Exército %d ganhou\n", aux);//Se houve algum ganhador, a aplicação encerra.
             exit(0);
         }
         int j;
@@ -68,7 +68,7 @@ void Atualiza(int rodadas, FILE *display){
             }
             if(a->robos[j+1]!=NULL){//Checar se o robo a ter as instruções executadas não foi removido.
                 if(a->robos[j+1]->count!=0){//Se estiver com algum valor no contador, o robo não poderá jogar essa rodada.
-                    printf("Robo %2d perde essa rodada.\n", a->robos[j+1]->index);
+                    printf("Robo %d perde essa rodada.\n", a->robos[j+1]->index);
                     a->robos[j+1]->count--;
                 }
                 else{//Senão, executar as instruções normalmente.
@@ -88,6 +88,7 @@ void Atualiza(int rodadas, FILE *display){
         if(i != rodadas - 1){
             //Ao fim de cada rodada, devem ser lidos os novos arquivos para cada robo
             for(j=0;j<MAXMAQ;j++){
+		if(a->robos[j+1]!=NULL){
                 //isso eh feito da mesma forma quando se cria a maquina
                 FILE* file;
                 int res, nl;
@@ -98,9 +99,10 @@ void Atualiza(int rodadas, FILE *display){
 		if(f[nl] == '\n') f[nl] = '\0';               
                 file = fopen(f, "r");
                 res = compilador(file, programa[j]);
-                a->robos[j+1]->prog = programa[j]; //mudanda do vetor de instrucoes a ser executado
-                a->robos[j+1]->ip = 0; //reset do ip para comecar tudo de novo
-                fclose(file); 
+                a->robos[j+1]->prog = programa[j]; //Mudando do vetor de instrucoes a ser executado
+                a->robos[j+1]->ip = 0; //Reset do ip para comecar tudo de novo
+                fclose(file); }
+		else{printf("Robo %d está morto.\n", j+1);}
             }    
         }
         
@@ -239,7 +241,7 @@ void Sistema(Maquina *m, char code, int op, FILE *display){
         Coord tmp2;
         case 'M':
             if(m->count != 0){//Se o robo não estiver com o contador zerado, ele não pode andar.
-                printf("Robo %2d não pode se mover mais nessa rodada.\n", m->index);
+                printf("Robo %d não pode se mover mais nessa rodada.\n", m->index);
                 return;
             }
             tmp = getNeighbour(m->position[0], m->position[1], op);//Pega as coordenadas da célula na direção desejada.
@@ -260,7 +262,7 @@ void Sistema(Maquina *m, char code, int op, FILE *display){
                 fprintf(display, "cristal %d %d %d\n", m->position[0], m->position[1], a->matriz[m->position[0]][m->position[1]].cristal);
                 fflush(display);
             }   
-            printf("Andou de [%1d][%1d] para [%1d][%1d].\n", m->position[0], m->position[1], tmp.x, tmp.y);
+            printf("Andou de [%d][%d] para [%d][%d].\n", m->position[0], m->position[1], tmp.x, tmp.y);
             tmp2.x = m->position[0];
             tmp2.y = m->position[1];
             m->position[0] = tmp.x;
@@ -302,7 +304,7 @@ void Sistema(Maquina *m, char code, int op, FILE *display){
             if(a->matriz[tmp.x][tmp.y].ocup == MAXMAQ+1){//Se a célula alvo for uma base.
                 a->exerc[a->baseCount[a->matriz[tmp.x][tmp.y].baseColour]-1]->base->vida -= m->cristal;//Reduzir a vida da base que está na célula alvo.
                 m->cristal = 0;//Zerar os cristais carregados pelo robo.
-                printf("Depositou na base %2d.\n", a->matriz[tmp.x][tmp.y].baseColour);
+                printf("Depositou na base %d.\n", a->matriz[tmp.x][tmp.y].baseColour);
                 fprintf(display, "att_base %d %d\n", a->matriz[tmp.x][tmp.y].baseColour, a->exerc[a->baseCount[a->matriz[tmp.x][tmp.y].baseColour]-1]->base->vida);//Manda comando para atualizar representação gráfica da base
                 fflush(display); 
                 break;     
@@ -332,7 +334,7 @@ void Sistema(Maquina *m, char code, int op, FILE *display){
                 printf("Não há cristais para recolher nesta célula.\n");
                 break;
             }
-            printf("Recolheu %1d cristais da célula [%1d][%1d].\n", a->matriz[tmp.x][tmp.y].cristal, tmp.x, tmp.y);
+            printf("Recolheu %d cristais da célula [%d][%d].\n", a->matriz[tmp.x][tmp.y].cristal, tmp.x, tmp.y);
             //Adiciona aos cristais carregados pelo robo o número de cristais presentes na célula alvo.
             m->cristal += a->matriz[tmp.x][tmp.y].cristal;
             a->matriz[tmp.x][tmp.y].cristal = 0;//Zera os cristais na célula alvo.
@@ -368,7 +370,7 @@ void Sistema(Maquina *m, char code, int op, FILE *display){
                 fprintf(display, "cristal %d %d %d\n", aux1, aux2, a->matriz[aux1][aux2].cristal);
                 fflush(display);
             }
-            printf("Efetuou o ataque na célula [%1d][%1d] atingindo o robô %3d.\n", tmp.x, tmp.y, a->matriz[tmp.x][tmp.y].ocup);
+            printf("Efetuou o ataque na célula [%1d][%1d] atingindo o robô %d.\n", tmp.x, tmp.y, a->matriz[tmp.x][tmp.y].ocup);
             break;
     }
 }
@@ -478,4 +480,43 @@ Coord avaliableNeighbour(int l, int c)//Função para pegar alguma célula vizin
     co[0].x = MAXMATRIZL;
     co[0].y = MAXMATRIZC;
     return co[0];
+}
+
+int NeighbourLook(int x, int y, int angle, int t)
+{
+	char *TER[] = {
+        "road",
+        "mountain",
+        "river"
+        }; 
+
+	char terr[10];            
+        char mount[10];
+        char riv[10];
+
+	Coord cord = getNeighbour(x, y, angle);
+	if(cord.x == MAXMATRIZL || cord.y == MAXMATRIZC) return -1;
+	else
+	{
+		switch(t) 
+		{
+			case(0):			  
+			  strcpy(terr, TER[a->matriz[cord.x][cord.y].terrain]);
+            		  strcpy(riv, "river");
+            		  strcpy(mount, "mountain");       
+           		  if(strcmp(terr, mount) == 0) return 1;                
+            		  if(strcmp(terr, riv) == 0) return 2;
+                	  return 0;		
+			  break;
+			case(1):
+			  return a->matriz[cord.x][cord.y].cristal;
+			  break;
+			case(2):
+			  return a->matriz[cord.x][cord.y].ocup;
+			  break;
+			case(3):
+			  return a->matriz[cord.x][cord.y].baseColour;
+			  break;			
+		}	
+	}
 }

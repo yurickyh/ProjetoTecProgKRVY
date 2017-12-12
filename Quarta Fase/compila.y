@@ -73,7 +73,9 @@ Acao:  MOVEt NUMt { AddInstr(MOVE, $2);}
 	 | RECOt NUMt { AddInstr(RECO, $2);}
 	 | ATAQt NUMt { AddInstr(ATAQ, $2);}
 	 | DEPOt NUMt { AddInstr(DEPO, $2);}
-	 | ATRt NUMt { AddInstr(ATR, $2);}
+	 | ATRt NUMt NUMt {  AddInstr(PUSH, $3);
+			AddInstr(ATR, $2);
+			}
 ;
 
 Expr: NUMt {  AddInstr(PUSH, $1);}

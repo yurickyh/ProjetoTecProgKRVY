@@ -42,6 +42,7 @@ char *CODES[] = {
 #endif
 
 void Sistema(Maquina *m, char code, int op, FILE *display);
+int NeighbourLook(int x, int y, int angle, int t);
 
 static void Erro(char *msg) {
   fprintf(stderr, "%s\n", msg);
@@ -286,7 +287,8 @@ void exec_maquina(Maquina *m, int n, FILE *display) {
 	  pil->topo = 0;
 	  return;
 	  
-	case PRN:	  
+	case PRN:
+	  printf("Robo de índice: %d --- ", m->index);	  
 	  printf("%d\n", desempilha(pil).val);
 	  break;
 	  
@@ -315,9 +317,32 @@ void exec_maquina(Maquina *m, int n, FILE *display) {
 	  break;
 
 	case ATR://Arrumar ATR!!!
-	  empilha(pil, (OPERANDO) {NUM, arg.val});
-	  printf("ATR: ");
-
+	  tmp = desempilha(pil);
+	  res.val = NeighbourLook(m->position[0], m->position[1], arg.val, tmp.val);	
+	  if(res.val == -1) Erro("Tentativa de olhar em célula inválida.\n"); 
+	  else
+	  {
+		switch(tmp.val)
+		{
+			case(0):
+			  if(res.val == 0) printf("Robo de índice: %d --- Terreno vizinho à %d graus = estrada.\n", m->index, arg.val);
+			  if(res.val == 1) printf("Robo de índice: %d --- Terreno vizinho à %d graus = montanha.\n", m->index, arg.val);
+			  if(res.val == 2) printf("Robo de índice: %d --- Terreno vizinho à %d graus = rio.\n", m->index, arg.val);
+			  break;
+			case(1):
+			  printf("Robo de índice: %d --- Número de cristais na célula vizinha à %d graus = %d.\n", m->index, arg.val, res.val);
+			  break;
+			case(2):
+			  if(res.val == 0) printf("Robo de índice: %d --- Célula vizinha à %d graus desocupada.\n", m->index, arg.val);
+			  else{ printf("Robo de índice: %d --- Célula vizinha à %d graus ocupada pelo robo %d.\n", m->index, arg.val, res.val); }
+			  break;
+			case(3):
+			  if(res.val == 0) printf("Robo de índice: %d --- Não há bases na célula vizinha à %d graus.\n", m->index, arg.val);
+			  else{ printf("Robo de índice: %d --- Célula vizinha à %d graus ocupada pela base %d.\n", m->index, arg.val, res.val); }
+			  break;		
+		}
+	  }	 
+	  break;
 	}
 	D(imprime(pil,5));
 	D(puts("\n"));

@@ -7,7 +7,7 @@
 #define MAXMATRIZL 8
 #define MAXMATRIZC 8
 #define BASELIFE 20
-#define INSTRNUMBER 1000
+#define INSTRNUMBER 80
 //Ao mudar o valor de MAXMAQ ou MAXEXERC ou ROBOSONEXERC, e preciso acertar os valores dos outros de modo que MAXMAQ=MAXEXERC*ROBOSONEXERC
 
 typedef enum{
@@ -63,4 +63,4 @@ void acertaMatriz();
 void Sistema(Maquina *m, char code, int op, FILE *display);
 Coord getNeighbour(int l, int c, int angle);
 Coord avaliableNeighbour(int l, int c);
-int compilador(FILE *, INSTR *);
+int NeighbourLook(int x, int y, int angle, int t);
