@@ -234,8 +234,8 @@ for line in fileinput.input():
         #print("Criacao da base %d" %(idBase))
         arena[i][j].draw()
         bass[idBase - 1].draw()
-        atu();
-        #pg.time.wait(100)
+        atu()
+        pg.time.wait(100)
         continue
 
     if r[0] == 'att_base':
@@ -246,6 +246,8 @@ for line in fileinput.input():
         # atualiza vida da base e desenha novamente
         bass[idBase - 1].atualiza_vida(vidaAtual)
         bass[idBase - 1].draw()
+        atu()
+        pg.time.wait(100)
         continue
 
     if r[0] == 'cristal':
@@ -263,7 +265,7 @@ for line in fileinput.input():
         i, j = list(map(int, r[1:]))
         arena[i][j].draw()
         atu()
-        #pg.time.wait(1000)
+        pg.time.wait(1000)
         continue
 
     # linha de movimentação:

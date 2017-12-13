@@ -7,7 +7,7 @@
 #define MAXMATRIZL 8
 #define MAXMATRIZC 8
 #define BASELIFE 20
-#define INSTRNUMBER 80 // Numero de instrucoes que cada robo tem por rodada
+#define INSTRNUMBER 200 // Numero de instrucoes que cada robo tem por rodada
 //Ao mudar o valor de MAXMAQ ou MAXEXERC ou ROBOSONEXERC, e preciso acertar os valores dos outros de modo que MAXMAQ=MAXEXERC*ROBOSONEXERC
 
 typedef enum{

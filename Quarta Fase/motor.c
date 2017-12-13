@@ -18,14 +18,14 @@ int main(int ac, char *argv[]) {
     };
     CriaArena();
     Celula c[MAXMATRIZL][MAXMATRIZC] = {
-        {{road, 0, 1, 0}, {road, 2, 0, 0}, {mountain, 0, 0, 0}, {road, 0, 0, 0}, {road, 0, 0, 0}, {river, 1, 0, 0}, {mountain, 2, 0, 0}, {road, 1, 0, 0}},
+        {{road, 0, 1, 0}, {road, 0, 0, 0}, {mountain, 2, 0, 0}, {road, 0, 0, 0}, {road, 0, 0, 0}, {river, 1, 0, 0}, {mountain, 2, 0, 0}, {road, 1, 0, 0}},
         {{mountain, 0, 0, 0}, {mountain, 1, 0, 0}, {road, 3, 0, 0}, {mountain, 1, 0, 0}, {river, 0, 0, 0}, {mountain, 1, 0, 0}, {river, 1, 0, 0}, {mountain, 0, 0, 0}},
         {{road, 0, 0, 0}, {mountain, 2, 0, 0}, {river, 1, 0, 0}, {river, 0, 0, 0}, {mountain, 3, 0, 0}, {road, 2, 0, 0}, {river, 0, 0, 0}, {river, 2, 0, 0}},
         {{road, 2, 0, 0}, {road, 2, 0, 0}, {road, 1, 0, 0}, {mountain, 2, 0, 0}, {mountain, 1, 0, 0}, {mountain, 1, 0, 0}, {mountain, 0, 0, 0}, {river, 2, 0, 0}},
         {{road, 2, 0, 0}, {river, 1, 0, 0}, {road, 2, 0, 0}, {road, 1, 0, 0}, {mountain, 3, 0, 0}, {road, 0, 0, 0}, {road, 2, 0, 0}, {river, 2, 0, 0}},
         {{road, 1, 0, 0}, {mountain, 2, 0, 0}, {road, 1, 0, 0}, {road, 3, 0, 0}, {road, 1, 0, 0}, {mountain, 3, 0, 0}, {road, 0, 0, 0}, {river, 2, 0, 0}},
         {{river, 0, 0, 0}, {road, 0, 0, 0}, {river, 3, 0, 0}, {mountain, 1, 0, 0}, {mountain, 2, 0, 0}, {road, 0, 0, 0}, {mountain, 2, 0, 0}, {road, 1, 0, 0}},
-        {{river, 1, 0, 0}, {road, 1, 0, 0}, {mountain, 0, 0, 0}, {road, 0, 0, 0}, {river, 0, 0, 0}, {river, 0, 0, 0}, {mountain, 0, 0, 0}, {road, 0, 1, 0}}
+        {{river, 1, 0, 0}, {road, 1, 0, 0}, {mountain, 0, 0, 0}, {road, 0, 0, 0}, {river, 0, 0, 0}, {river, 21, 0, 0}, {mountain, 0, 0, 0}, {road, 0, 1, 0}}
     };
     memcpy(a->matriz, c, sizeof(a->matriz));
 
@@ -48,7 +48,7 @@ int main(int ac, char *argv[]) {
 
     a->exerc[a->exercTopo++] = InsereExercito(0, 0, display);
     a->exerc[a->exercTopo++] = InsereExercito(7, 7, display);
-    Atualiza(30, display); // 30 rodadas
+    Atualiza(5, display); // numero de rodadas
     FimRodadas(); // Executado após todas as rodadas terminarem para verificar se houve ganhador
 
     pclose(display); //Fecha o pipe.

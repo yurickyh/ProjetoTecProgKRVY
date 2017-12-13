@@ -90,12 +90,14 @@ void Atualiza(int rodadas, FILE *display){
                 }
             }
 
-            // Remove exército se vida da base /,= 0
+            // Remove exército se vida da base <= 0
             int y;
             for(y=0;y<MAXEXERC;y++){ // Loop para checar todos os exércitos.
                 if(a->exerc[y]!=NULL){ // Se o exército a ser checado não foi removido.
                     if(a->exerc[y]->base->vida <= 0){ // Checar se alguma base ficou sem vida e removê-la.
                         RemoveExercito(a->exerc[y], &a->exerc[y], display);
+                        printf("Fim de jogo! Exército %d foi derrotado!\n", y+1);
+                        exit(0);
                     }
                 }
             }
@@ -128,12 +130,11 @@ void Atualiza(int rodadas, FILE *display){
                         if (res != 0)
                             printf("Arquivo possui comandos inválidos. Tente novamente.\n");
                     } while (res != 0);
-                    
-                    printf("%d\n", res);
+
                     a->robos[j+1]->prog = programa[j]; //Mudando do vetor de instrucoes a ser executado
                     a->robos[j+1]->ip = 0; //Reset do ip para comecar tudo de novo
                     fclose(file);
-                } else { printf("Robo %d está morto.\n", j+1); }
+                } else { printf("Robo %d foi destruído.\n", j+1); }
             }    
         }
     }
@@ -229,7 +230,7 @@ void destroiBase(Base** b){
 }
 
 void RemoveExercito(Exercito *e, Exercito** ex, FILE *display){
-    int i = e->base->colour;      
+    int i = e->base->colour;
     int j;
     int aux1;
     int aux2;
@@ -294,11 +295,11 @@ void FimRodadas() {
         int vida_exercito1 = a->exerc[0]->base->vida;
         int vida_exercito2 = a->exerc[1]->base->vida;
         if (vida_exercito1 > vida_exercito2){
-            printf("Fim de jogo! Exército 1 ganhou\n");
+            printf("Fim de jogo! Por ter a base em melhores condições, o Exército 1 ganhou!\n");
         } else if (vida_exercito1 < vida_exercito2) {
-            printf("Fim de jogo! Exército 2 ganhou\n");
+            printf("Fim de jogo! Por ter a base em melhores condições, o Exército 2 ganhou!\n");
         } else {
-            printf("Fim de jogo! Houve empate!");
+            printf("Fim de jogo! Houve empate!\n");
         }
     }
 }
@@ -378,11 +379,11 @@ void Sistema(Maquina *m, char code, int op, FILE *display){
                 printf("O robo nao tem cristais para depositar.\n");
                 break;
             }
-            if(a->matriz[tmp.x][tmp.y].ocup == MAXMAQ+1){//Se a célula alvo for uma base.
-                a->exerc[a->baseCount[a->matriz[tmp.x][tmp.y].baseColour]-1]->base->vida -= m->cristal;//Reduzir a vida da base que está na célula alvo.
+            if(a->matriz[tmp.x][tmp.y].ocup == MAXMAQ+1){ //Se a célula alvo for uma base.
+                a->exerc[a->baseCount[a->matriz[tmp.x][tmp.y].baseColour]]->base->vida -= m->cristal;//Reduzir a vida da base que está na célula alvo.
                 m->cristal = 0;//Zerar os cristais carregados pelo robo.
                 printf("Depositou na base %d.\n", a->matriz[tmp.x][tmp.y].baseColour);
-                fprintf(display, "att_base %d %d\n", a->matriz[tmp.x][tmp.y].baseColour, a->exerc[a->baseCount[a->matriz[tmp.x][tmp.y].baseColour]-1]->base->vida);//Manda comando para atualizar representação gráfica da base
+                fprintf(display, "att_base %d %d\n", a->matriz[tmp.x][tmp.y].baseColour, a->exerc[a->baseCount[a->matriz[tmp.x][tmp.y].baseColour]]->base->vida); //Manda comando para atualizar representação gráfica da base
                 fflush(display); 
                 break;     
             }

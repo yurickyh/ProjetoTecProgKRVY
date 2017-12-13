@@ -33,8 +33,15 @@ TODOS OS CÓDIGOS FORAM TESTADOS EM LINUX UBUNTU 16.04 LTS
             "move 0;" move o robô para a célula à direita;
             "take 315;" recolhe os cristais da célula à sudeste.
 
-*** AJUSTES EM MAC.C e ARENA.C:
-    # TODO
+*** ARENA.C E ARENA.H:
+    Em "arena.c" as funções InsereExército() e Atualiza() passaram a usar os arquivos lidos (e verificados pelo Flex+Bison) como conjunto de instruções, baseado no exemplo dado pelo professor em "motor.c";
+    Foi criada a função auxiliar avaliableNeighbour() para verificar células vazias vizinhas à base (para posicionar os robôs nestas);
+    Foi criada a função auxiliar NeighbourLook() para a nova instrução "look";
+
+    Em "arena.h" foi criada uma matriz "programa" na qual as linhas representam um vetor com x instruções, sendo x o número de colunas da matriz (2000 por default);
+
+*** MAC.C:
+    "mac.c" foi atualizado com as mudanças feitas pelo professor. Além disso, foi adicionada a instrução ATR que funciona como o comando "look" para os robôs.
 
 *** COMO O JOGO FUNCIONA (REGRAS DO JOGO):
     ARENA:
@@ -51,14 +58,11 @@ TODOS OS CÓDIGOS FORAM TESTADOS EM LINUX UBUNTU 16.04 LTS
 
     RODADAS:
         A cada rodada, cada jogador deve mandar para o robô um arquivo com um conjunto de instruções no formato permitido pelo Flex+Bison;
-        **
         A cada rodada, são executadas até 3 instruções para cada robô (definido pela constante INSTRNUMBER em arena.h);
         Se o arquivo com o conjunto de instruções não for encontrado, será pedido um novo arquivo (até ser dado um arquivo existente);
         Se o arquivo com o conjunto de instruções possuir erros de sintaxe, será pedido um novo arquivo (até ser dado um arquivo válido);
         Se o arquivo com o conjunto de instruções possuir mais que 3 instruções, apenas as 3 primeiras serão executadas;
         Se o arquivo com o conjunto de instruções possuir menos que 3 instruções, serão executadas apenas as instruções dadas;
-        ** 
-        (Por questões de teste, o valor de INSTRNUMBER é 80 (para poder testar fatorial e fibonacci por exemplo). No entanto, os teste criados forem criados com 3 instruções por rodada).
         Instruções inválidas, como tentar se movimentar para célula inexistente (fora da arena), serão contadas.
 
     FORMATO DAS INSTRUÇÕES:
@@ -107,7 +111,97 @@ TODOS OS CÓDIGOS FORAM TESTADOS EM LINUX UBUNTU 16.04 LTS
             Caso as duas estejam com a mesma quantidade de pontos de vida, ocorre um empate.
 
 *** MOTOR.C E TESTES:
-    #TODO
+    A estrutura de "motor.c" continua a mesma da fase anterior.
+    Quanto aos testes, estes deixaram de ser feitos pelo vetor de INSTR em "motor.c".
+    Como o jogo funciona com o input de arquivos com as instruções para cada robô, os testes passaram para arquivos separados.
+    Todos os arquivos de teste estão na pasta "testes".
+
+    EXPLICANDO OS TESTES:
+        Como está descrito nas REGRAS DO JOGO, idealmente cada robô executa 3 instruções por rodada e há 30 rodadas.
+        No entanto, para testes, os valores foram alterados para 200 instruções** por rodada e apenas 5 rodadas (as variáveis para alterar os valores são INSTRNUMBER em "arena.h" e o primeiro argumento de Atualiza() em "motor.c").
+        **200 para poderem executar "fatorial" e "fibo" como parte dos testes.
+
+        Foram criados testes simples, que mostram as ações básicas do robô (mover, coletar, depositar, atacar e olhar).
+        Estes estão nos arquivos "t0", "t1", "t2, "t3", "t4":
+            t1 = arquivo com 1 instrução de movimentação para a esquerda (180°);
+            t2 = arquivo com 8 instruções: coletar em volta do robô, depositar à esquerda e depositar à direita;
+            t3 = arquivo com 6 instruções: ataque em volta do robô;
+            t4 = arquivo com 24 instruções: verificar todos os atributos das células em volta do robô.
+
+        O teste "tbase" foi criado para verificar uma das condições de vitória de jogo.
+            tbase = arquivo com 4 comandos: olhar esquerda e direita, coletar da esquerda e depositar à direita.
+
+        Os erros possíveis erros em arquivos estão representados em "erro1" e "erro2":
+            erro1 = arquivo formado por apenas 1 instrução com erro de sintaxe;
+            erro2 = arquivo formado por apenas 1 instrução que não possui erros de sintaxe, mas possui um ângulo inválido.
+    
+    COMO TESTAR:
+        Basta executar o comando "make" no terminal e depois "./motor".
+        A interface gráfica irá aparecer e deverá ser digitado no terminal os nomes dos arquivos que contém o conjunto de instruções para cada robô.
+        Basta digitar o caminho para o arquivo descrito nos testes e verificar o que ocorre. Por questão de organização, estão todos na pasta "testes", mas fica mais fácil colocar na mesma pasta do executável "motor".
+        * Todos os robôs devem receber um arquivo antes das instruções serem efetivadas.
+        ** Quando a descrição do teste diz "podem receber qualquer arquivo", utilize "fibo" (faz o robô imprimir os 8 primeiros números da sequência de Fibonacci) ou "fatorial" (faz o robô imprimir o fatorial de 4) pois mostram que o robô executa instruções e não interfere na arena.
+
+        TESTE 1: Movimentação
+            Todos os robôs recebem o arquivo "t1".
+            O robô 1 não se movem pois a célula à esquerda está ocupada pela base.
+            O robô 2 não se movem pois não há célula mais à esquerda.
+            Os robôs 3 e 4 devem se mover para a esquerda. Como o robô 3 se move para uma célula de "river" e o robô 4 para uma célula de "mountain", o robô 3 perde duas rodadas e o 4 perde uma.
+            Serão apontados no terminal quais robôs perderam a rodada.
+            O intuito do teste é mostrar a movimentação de personagens, condição de movimentação e perda de rodadas por movimentação em diferentes terrenos.
+
+        TESTE 2: Coleta e deposição
+            O robô 1 recebe o arquivo "t2". Pode ser testada apenas para o robô 1 e apenas na primeira rodada.
+            Os outros robôs podem receber qualquer arquivo.
+            O robô tentará coletar cristais em todas as células em volta dele (sentido anti-horário), depositar em sua base (à esquerda, 180°) e depois tentar depositar à direita (0°).
+            Serão apontados no terminal os cristais coletados, quais células não possuem cristais, quais são inválidas, deposição na base 1 e tentativa de deposição.
+            O intuito do teste é mostrar coleta de cristais, condições de coleta, deposição, condições de deposição e perda de vida da base.
+
+        TESTE 3: Ataque
+            Todos os robôs rebecem o arquivo "t3".
+            Todos os robôs tentam atacar todas as células à sua volta.
+            Serão apontados no terminal os ataques efetivados, quais foram feitos à células vazias e quais foram feitos à células inválidas. Ao final os robôs devem ter 2 de vida.
+            O intuito do teste é mostrar ataque, condições de ataque e diminuição de vida do robô.
+
+        TESTE 4: Olhar
+            Todos os robôs rebecem o arquivo "t4".
+            Todos os robôs verificam os atributos de todas as células à sua volta (sentido anti-horário): tipo de terreno, quantidade de cristais, se está ocupado ou se é uma base.
+            Serão apontados no terminal todas as informações na ordem.
+            O intuito do teste é mostrar a funcionalidade da nova instrução.
+
+        TESTE 5: Vitória por destruição da base
+            O robô 4 recebe o arquivo "tbase"
+            Os outros robôs podem receber qualquer arquivo.
+            O robô 4 irá olhar a quantidade de cristais à sua esquerda, olhar a base à direita, recolher os cristais (foram colocados 21 para este teste) e depositar em sua própria base à esquerda.
+            O intuito do teste é verificar a principal condição de vitória, que é destruir uma base (vida da base <= 0);
+
+        TESTE 6: Vitória após final das rodadas
+            O robô 1 recebe o arquivo "t2" na primeira rodada. Nas próximas, recebe "fatorial" ou "fibo".
+             Os outros robôs recebem "fatorial".
+            Após o término de todas as rodadas, como a quantidade de vida das base 1 é inferior à da base 2, o exército 2 é declarado vencedor.
+            O intuito do teste é verificar a condição vitória após o término de todas as rodadas.
+
+        TESTE 7: Empate
+            Todos os robôs recebem "fatorial" ou "fibo" em todas as 5 rodadas.
+            Todos os robôs devem imprimir o fatorial de 4 a cada rodada (ou os 8 primeiros números de Fibonacci).
+            Após o término de todas as rodadas, como a quantidade de vida das duas bases são iguais, o jogo deve declarar um empate.
+            O intuito do teste é verificar a condição de empate após o término de todas as rodadas.
+
+        TESTE 8: Arquivo com erro de sintaxe
+            Qualquer robô recebe o arquivo "erro1" a qualquer momento.
+            Pode ser feito no meio de outros testes.
+            Ao chamá-lo, o jogo deve apontar que há erro de sintaxe no arquivo e pedir um novo arquivo (até ser digitado um arquivo válido).
+
+        TESTE 9: Arquivo com erro no ângulo da instrução
+            Qualquer robô recebe o arquivo "erro2" a qualquer momento.
+            Pode ser feito no meio de outros testes.
+            Ao chamá-lo, o jogo deve apontar a instrução "move" para uma célula inválida e continuar o jogo (o robô praticamente executa um "do nothing").
+
+        TESTE 10: Arquivo não encontrado
+            Qualquer robô recebe um nome de arquivo que não existe.
+            Pode ser feito no meio de outros testes.
+            Ao chamá-lo, o jogo deve apontar que o arquivo não existe e pedir um novo arquivo (até ser digitado um arquivo existente).
+
 
 *** TRIVIA E OUTRAS IDEIAS DE IMPLEMENTAÇÃO:
     IDEIAS:
