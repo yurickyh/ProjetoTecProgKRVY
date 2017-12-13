@@ -24,17 +24,19 @@ void CriaArena(){
     a->exercTopo = 0;
 }
 
+// Executa cada rodada
 void Atualiza(int rodadas, FILE *display){
     int i;
     for(i=0;i<rodadas;i++){
-    printf("!!*******Rodada %d*******!!\n", i+1);
+        printf("!!*******Rodada %d*******!!\n", i+1);
         int u;
         int count = 0;
         int aux;
         int auxPosition1;
         int auxPosition2;
 
-        for(u=1;u<MAXEXERC+1;u++){//Checar se há apenas uma base ativa, isto é, checar se alguem ganhou.
+        //Checar se há apenas uma base ativa, isto é, checar se alguem ganhou.
+        for(u=1;u<MAXEXERC+1;u++){
             if(a->baseCount[u] != 0){
                 count++;
                 if(count>1){
@@ -43,22 +45,27 @@ void Atualiza(int rodadas, FILE *display){
                 aux = u;
             }
         }
-
+        //Se houve algum ganhador, a aplicação encerra.
         if(count==1){
-            printf("Fim de jogo! Exército %d ganhou\n", aux);//Se houve algum ganhador, a aplicação encerra.
+            printf("Fim de jogo! Exército %d ganhou\n", aux);
             exit(0);
         }
 
+        //Loop para passar e executar as instruções de todos os robos.
         int j;
-
-        for(j=0;j<MAXMAQ;j++){//Loop para passar e executar as instruções de todos os robos.
+        for(j=0;j<MAXMAQ;j++){ 
             //printf("Teste ---- %d\n", j);
-            if(a->robos[j+1]!=NULL && a->robos[j+1]->vida <= 0){//Checar se o robo ficou sem vida.
+
+            //Checar se o robo ficou sem vida
+            // Se sim, o remove.
+            if(a->robos[j+1]!=NULL && a->robos[j+1]->vida <= 0){
                 auxPosition1 = a->robos[j+1]->position[0];
                 auxPosition2 = a->robos[j+1]->position[1];
+
                 //Remover o robo na interface gráfica.           
                 fprintf(display, "clean %d %d\n", auxPosition1, auxPosition2);
                 fflush(display);
+
                 //Verificar se o robo a ser removido carregava algum cristal.
                 if((a->matriz[auxPosition1][auxPosition2].cristal + a->robos[j+1]->cristal) > 0){
                     //Adicionar os cristais do robo removido aos cristais presentes na célula em que ele estava.
@@ -71,8 +78,9 @@ void Atualiza(int rodadas, FILE *display){
                 destroi_maquina(&a->robos[j+1]);//Remover o robo que ficou sem vida.
             }
 
-            if(a->robos[j+1]!=NULL){//Checar se o robo a ter as instruções executadas não foi removido.
-                if(a->robos[j+1]->count!=0){//Se estiver com algum valor no contador, o robo não poderá jogar essa rodada.
+            // Executa instruções do robô
+            if(a->robos[j+1]!=NULL){ //Checar se o robo a ter as instruções executadas não foi removido.
+                if(a->robos[j+1]->count!=0){ //Se estiver com algum valor no contador, o robo não poderá jogar essa rodada.
                     printf("Robo %d perde essa rodada.\n", a->robos[j+1]->index);
                     a->robos[j+1]->count--;
                 }
@@ -82,30 +90,46 @@ void Atualiza(int rodadas, FILE *display){
                 }
             }
 
+            // Remove exército se vida da base /,= 0
             int y;
-            for(y=0;y<MAXEXERC;y++){//Loop para checar todos os exércitos.
-                if(a->exerc[y]!=NULL){//Se o exército a ser checado não foi removido.
-                    if(a->exerc[y]->base->vida <= 0){//Checar se alguma base ficou sem vida e removê-la.
+            for(y=0;y<MAXEXERC;y++){ // Loop para checar todos os exércitos.
+                if(a->exerc[y]!=NULL){ // Se o exército a ser checado não foi removido.
+                    if(a->exerc[y]->base->vida <= 0){ // Checar se alguma base ficou sem vida e removê-la.
                         RemoveExercito(a->exerc[y], &a->exerc[y], display);
                     }
                 }
             }
         }
 
+        //Ao fim de cada rodada, devem ser lidos os novos arquivos para cada robo
         if(i != rodadas - 1){
-            //Ao fim de cada rodada, devem ser lidos os novos arquivos para cada robo
             for(j=0;j<MAXMAQ;j++){
                 if(a->robos[j+1]!=NULL){
                     //isso eh feito da mesma forma quando se cria a maquina
                     FILE* file;
                     int res, nl;
-                    printf("Programa para o robo %i: ", j+1);
                     char f[20];
-                    fgets(f, 20, stdin);
-                    nl = strlen(f)-1;
-                    if(f[nl] == '\n') f[nl] = '\0';               
-                    file = fopen(f, "r");
-                    res = compilador(file, programa[j]);
+
+                    // Caso as instr do arquivo dado possuam erros de sintaxe, pergunta novamente
+                    do{
+                        // Caso o arquivo dado não seja encontrado, pergunta novamente
+                        do {
+                            printf("Programa para o robo %i: ", j+1);
+                            fgets(f, 20, stdin);
+
+                            nl = strlen(f)-1;
+                            if(f[nl] == '\n') f[nl] = '\0';
+
+                            file = fopen(f, "r");
+                            if(file == NULL)
+                                printf("Arquivo não foi encontrado. Tente novamente. \n");
+                        } while (file == NULL);
+                        res = compilador(file, programa[j]);
+                        if (res != 0)
+                            printf("Arquivo possui comandos inválidos. Tente novamente.\n");
+                    } while (res != 0);
+                    
+                    printf("%d\n", res);
                     a->robos[j+1]->prog = programa[j]; //Mudando do vetor de instrucoes a ser executado
                     a->robos[j+1]->ip = 0; //Reset do ip para comecar tudo de novo
                     fclose(file);
@@ -132,44 +156,59 @@ Exercito *InsereExercito(int x, int y, /*INSTR *p, */FILE *display){ // x e y = 
         fprintf(display, "base sprites/base2r.png %d %d %d\n", a->matriz[x][y].baseColour, x, y); //criar a base azul
     }
     fflush(display);  
-    for(i=0;i<ROBOSONEXERC;i++) {//Loop para criar todos os robos do exército.	
+
+    //Loop para criar todos os robos do exército.
+    for(i=0;i<ROBOSONEXERC;i++) {
         FILE* file;
         int res, nl;
-        printf("Programa para o robo %i: ", a->robosTopo);
-        char f[20];	
-        fgets(f, 20, stdin);
+        char f[20];
 
-        nl = strlen(f)-1;
-        if(f[nl] == '\n') f[nl] = '\0';
+        // Caso as instr do arquivo dado possuam erros de sintaxe, pergunta novamente
+        do{
+            // Caso o arquivo dado não seja encontrado, pergunta novamente
+            do {
+                printf("Programa para o robo %i: ", a->robosTopo);
+                fgets(f, 20, stdin);
 
-        file = fopen(f, "r");
-        res = compilador(file, programa[a->robosTopo-1]);
+                nl = strlen(f)-1;
+                if(f[nl] == '\n') f[nl] = '\0';
+
+                file = fopen(f, "r");
+                if(file == NULL)
+                    printf("Arquivo não foi encontrado. Tente novamente. \n");
+            } while (file == NULL);
+            res = compilador(file, programa[a->robosTopo-1]);
+            if (res != 0)
+                printf("Arquivo possui comandos inválidos. Tente novamente.\n");
+        } while (res != 0);
+
         Maquina *maq = cria_maquina(programa[a->robosTopo-1]);
         fclose(file);
 
-        Coord aux = avaliableNeighbour(x, y);//Pega alguma célula vizinha disponível à base do exército.
+        Coord aux = avaliableNeighbour(x, y); //Pega alguma célula vizinha disponível à base do exército.
 
-        if(aux.x!=MAXMATRIZL && aux.y!=MAXMATRIZC){//Se a função retornar as coordenadas (MAXMATRIZL, MAXMATRIZC), não há células disponíveis.	    
+        if(aux.x!=MAXMATRIZL && aux.y!=MAXMATRIZC){ //Se a função retornar as coordenadas (MAXMATRIZL, MAXMATRIZC), não há células disponíveis.	    
             maq->position[0] = aux.x;
             maq->position[1] = aux.y;
             maq->index = a->robosTopo;
             a->robos[a->robosTopo++] = maq;
             a->matriz[aux.x][aux.y].ocup = maq->index; 
         }
-        if(a->matriz[x][y].baseColour == 1){//Desenha o robo do exército 1 na interface gráfica numa célula vizinha disponível.
+        if(a->matriz[x][y].baseColour == 1){ //Desenha o robo do exército 1 na interface gráfica numa célula vizinha disponível.
             fprintf(display, "rob sprites/robo1.png %d %d %d\n", maq->index-1, maq->position[0], maq->position[1]);            
             fflush(display); 
         }
-        if(a->matriz[x][y].baseColour == 2){//Desenha o robo do exército 2 na interface gráfica numa célula vizinha disponível.
+        if(a->matriz[x][y].baseColour == 2){ //Desenha o robo do exército 2 na interface gráfica numa célula vizinha disponível.
             fprintf(display, "rob sprites/robo2.png %d %d %d\n", maq->index-1, maq->position[0], maq->position[1]);
             fflush(display); 
         }
-        e->robots[i] = maq;//Adiciona o robo no vetor de robos do seu exército.
+        e->robots[i] = maq; //Adiciona o robo no vetor de robos do seu exército.
     }
     return e;
 }
 
-Base *createBase(){//Escolher e criar um número de base que ainda não está sendo usado.
+//Escolher e criar um número de base que ainda não está sendo usado.
+Base *createBase(){
     int i;
     for(i=1;i<MAXEXERC+1; i++){
         if(a->baseCount[i]==0){
@@ -194,13 +233,14 @@ void RemoveExercito(Exercito *e, Exercito** ex, FILE *display){
     int j;
     int aux1;
     int aux2;
-    a->matriz[e->base->position[0]][e->base->position[1]].ocup = 0;//Desocupa a célula onde estava a base do exército a ser removido.  
-    for(j=(ROBOSONEXERC*(i-1));j<(i*ROBOSONEXERC);j++){//Loop que passa apenas pelos indíces dos robos do exército a ser removido.   
+    a->matriz[e->base->position[0]][e->base->position[1]].ocup = 0; //Desocupa a célula onde estava a base do exército a ser removido.  
+    for(j=(ROBOSONEXERC*(i-1));j<(i*ROBOSONEXERC);j++){ //Loop que passa apenas pelos indíces dos robos do exército a ser removido.   
         if(a->robos[j+1]!=NULL){
             aux1 = a->robos[j+1]->position[0];
             aux2 = a->robos[j+1]->position[1];
-            fprintf(display, "clean %d %d\n", aux1, aux2);//Remove o robo na interface gráfica.
+            fprintf(display, "clean %d %d\n", aux1, aux2); //Remove o robo na interface gráfica.
             fflush(display);
+
             //Adiciona os cristais que o robo a ser removido estava carregando à célula onde ele estava.
             a->matriz[aux1][aux2].cristal += a->robos[j+1]->cristal;
             if(a->matriz[aux1][aux2].cristal > 0){
@@ -220,7 +260,8 @@ void RemoveExercito(Exercito *e, Exercito** ex, FILE *display){
     *ex = NULL;
 }
 
-void acertaMatriz(){//Garante que a células que eram bases sejam desocupadas.
+//Garante que a células que eram bases sejam desocupadas.
+void acertaMatriz(){
     int i;
     for(i=0;i<MAXMATRIZL;i++){
         int j;
@@ -232,6 +273,32 @@ void acertaMatriz(){//Garante que a células que eram bases sejam desocupadas.
                     return;
                 }
             }
+        }
+    }
+}
+
+// Chamada ao fim de todas as rodadas
+// Se não houve vencedor ainda, verifica baseado nos pontos de vida das bases
+void FimRodadas() {
+    int fim = 0;
+    int y;
+    // Loop verifica os exércitos
+    // Se algum já foi removido, o jogo já acabou
+    for(y=0;y<MAXEXERC;y++){
+        if(a->exerc[y]==NULL){
+            fim = 1;
+        }
+    }
+    
+    if (!fim){  
+        int vida_exercito1 = a->exerc[0]->base->vida;
+        int vida_exercito2 = a->exerc[1]->base->vida;
+        if (vida_exercito1 > vida_exercito2){
+            printf("Fim de jogo! Exército 1 ganhou\n");
+        } else if (vida_exercito1 < vida_exercito2) {
+            printf("Fim de jogo! Exército 2 ganhou\n");
+        } else {
+            printf("Fim de jogo! Houve empate!");
         }
     }
 }
@@ -385,7 +452,8 @@ void Sistema(Maquina *m, char code, int op, FILE *display){
     }
 }
 
-Coord getNeighbour(int l, int c, int angle){//Função para devolver a célula vizinha na matriz hexagonal em um dado ângulo.
+//Função para devolver a célula vizinha na matriz hexagonal em um dado ângulo.
+Coord getNeighbour(int l, int c, int angle){
     Coord cord;
     switch (angle){
         case 0:
@@ -469,11 +537,16 @@ Coord getNeighbour(int l, int c, int angle){//Função para devolver a célula v
                 }
             }
             break;
+        default: // ângulo inválido -> célula inválida
+            cord.x = MAXMATRIZL;
+            cord.y = MAXMATRIZC;
+            break;
     }
     return cord;
 }
 
-Coord avaliableNeighbour(int l, int c) {//Função para pegar alguma célula vizinha disponível. A ordem de checagem segue no sentido anti-horário.
+//Função para pegar alguma célula vizinha disponível. A ordem de checagem segue no sentido anti-horário.
+Coord avaliableNeighbour(int l, int c) {
     Coord co[] = {getNeighbour(l, c, 0), getNeighbour(l, c, 45), getNeighbour(l, c, 135), getNeighbour(l, c, 180), getNeighbour(l, c, 225), getNeighbour(l, c, 315)};
     int i;
     for(i=0; i<6; i++)
@@ -491,6 +564,11 @@ Coord avaliableNeighbour(int l, int c) {//Função para pegar alguma célula viz
     return co[0];
 }
 
+// Retorna atributo de célula vizinha
+// t = 0 - retorna qual o terreno da célula
+// t = 1 - retorna quantidade de cristais
+// t = 2 - verifica se célula está ocupada
+// t = 3 - verifica se célula possui base
 int NeighbourLook(int x, int y, int angle, int t) {
     char *TER[] = {
         "road",

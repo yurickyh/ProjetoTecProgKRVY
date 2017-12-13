@@ -34,7 +34,7 @@ void AddInstr(OpCode op, int val) {
 %token <val>  NUMt
 %token <cod> ID
 %token ADDt SUBt MULt DIVt ASGN OPEN CLOSE RETt EOL 
-%token RECOt MOVEt ATAQt DEPOt ATRt
+%token RECOt MOVEt ATAQt DEPOt ATRt ANGt
 %token EQt NEt LTt LEt GTt GEt ABRE FECHA SEP
 %token IF ELSE WHILE FUNC PRINT
 %right ASGN
@@ -192,7 +192,7 @@ ListParms:
 extern FILE *yyin;
 
 void yyerror(char const *msg) {
-  fprintf(stderr,"ERRO: %s",msg);
+  fprintf(stderr,"ERRO: %s\n",msg);
 }
 
 int compilador(FILE *cod, INSTR *dest) {

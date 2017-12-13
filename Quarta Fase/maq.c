@@ -332,7 +332,7 @@ void exec_maquina(Maquina *m, int n, FILE *display) {
                 Sistema(m, 'M', arg.val, display);
                 break;
 
-            case ATR://Arrumar ATR!!!
+            case ATR: // nova instrução look - verifica atributos da célula vizinha
                 tmp = desempilha(pil);
                 res.val = NeighbourLook(m->position[0], m->position[1], arg.val, tmp.val);
                 if(res.val == -1) Erro("Tentativa de olhar em célula inválida.\n"); 

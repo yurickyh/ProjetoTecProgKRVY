@@ -5,7 +5,6 @@
 FILE *display;
 
 int main(int ac, char *argv[]) {
-    //Descomentar os testes no vetor programa, um por execução.
     int lin = 0, col = 0, color = 0;
     char *TER[] = {
         "road",
@@ -29,11 +28,13 @@ int main(int ac, char *argv[]) {
         {{river, 1, 0, 0}, {road, 1, 0, 0}, {mountain, 0, 0, 0}, {road, 0, 0, 0}, {river, 0, 0, 0}, {river, 0, 0, 0}, {mountain, 0, 0, 0}, {road, 0, 1, 0}}
     };
     memcpy(a->matriz, c, sizeof(a->matriz));
+
     display = popen("./apres", "w"); //Criação do pipe para o apres.
-    if (display == NULL) {//Verificar se o display é nulo.
+    if (display == NULL) { //Verificar se o display é nulo.
         fprintf(stderr, "Não encontrei o programa de exibição\n");
         return 1;
     }  
+
     //Desenha as características da matriz na interface gráfica.
     for (lin = 0; lin < MAXMATRIZL; lin++){
         for (col = 0; col < MAXMATRIZC; col++){      
@@ -44,9 +45,13 @@ int main(int ac, char *argv[]) {
             fflush(display);
         }
     }
+
     a->exerc[a->exercTopo++] = InsereExercito(0, 0, display);
     a->exerc[a->exercTopo++] = InsereExercito(7, 7, display);
-    Atualiza(5, display);
-    pclose(display);//Fecha o pipe.
+    Atualiza(30, display); // 30 rodadas
+    FimRodadas(); // Executado após todas as rodadas terminarem para verificar se houve ganhador
+
+    pclose(display); //Fecha o pipe.
+
     return 0;
 }
